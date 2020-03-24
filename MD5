@@ -1,0 +1,13 @@
+8ba42b9fe2d4e9e7cc2d0e48a5c4fb1b *DESCRIPTION
+19a1a8ff98a4bf82a6919dce609dbf5a *NAMESPACE
+ae0ecc820931af79e5694dcb37d59a50 *NEWS.md
+901b8c4d9a55ba4b0b9d75e362cddbcf *R/CI90.r
+b8dcb6302b8ee5420cf0502c692f28bf *R/as.jury.point.r
+dfeb954480b5e24d01ba448d6a34a702 *R/as.jury.stat.r
+4a9e20574030b74c14004d44ab961c1d *R/compare.jury.stats.r
+1191c35cffccd8dd48c7cafbb3a00e64 *R/se.prop.r
+d3115706706895af1644cdb03dc046f8 *man/CI90.Rd
+7d93a72dac2d41788172be5604f2dc19 *man/as.jury.point.Rd
+ceaa4af20955f05e0acbd078edd48ca3 *man/as.jury.stat.Rd
+7ce6231f45745e849bbfae6550ca865c *man/compare.jury.stats.Rd
+ece2260357f26cc58ae6395d78ce8636 *man/se.prop.Rd
