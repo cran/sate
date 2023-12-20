@@ -2,21 +2,37 @@
 % Please edit documentation in R/as.jury.point.r
 \name{as.jury.point}
 \alias{as.jury.point}
-\title{Calculates probability jury finds defendant guilty based on juror preferences}
+\title{Calculates probability a jury will find defendant guilty based on juror preferences}
 \usage{
-as.jury.point(pg)
+as.jury.point(
+  sample_pg,
+  jury_n = 12,
+  pstrikes = 0,
+  dstrikes = 0,
+  accuracy = 0.15
+)
 }
 \arguments{
-\item{pg}{The proportion of jurors who favor a guilty verdict.}
+\item{sample_pg}{Proportion of jurors who favor a guilty verdict; a number between 0 and 1.}
+
+\item{jury_n}{Size of the jury (i.e. 6, 8, or 12); default value is 12.}
+
+\item{pstrikes}{Number of peremptory strikes by prosecution; default value is 0.}
+
+\item{dstrikes}{Number of peremptory strikes by defendant; default value is 0.}
+
+\item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
 }
 \value{
 Returns the probability jury finds defendant guilty.
 }
 \description{
-Calculates probability jury finds defendant guilty based on juror preferences. Does not estimate uncertainty.
+Calculates probability jury finds defendant guilty based on verdict preferences of jury pool.
+             Does not estimate uncertainty (use as.jury.stats function for inferential statistics).
 }
 \examples{
-   as.jury.point(pg=.50)
+   library(sate)
+   as.jury.point(sample_pg = .50)
 
-   as.jury.point(pg=10/12)
+   as.jury.point(sample_pg = 10/12)
 }
