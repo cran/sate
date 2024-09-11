@@ -1,17 +1,24 @@
 
-#' Estimates jury-level differences based on juror-level statistics with inferential statistics
+#' Estimates jury-level differences based on juror-level statistics with inferential
+#' statistics
 #'
-#' @param pg_actual The proportion of jurors who favor a guilty verdict in the actual trial condition (the trial with error).
+#' @param pg_actual The proportion of jurors who favor a guilty verdict in the
+#'                  actual trial condition (the trial with error).
 #' @param n_actual The size of the sample used to estimate pg_actual.
-#' @param pg_hypo The proportion of jurors who favor a guilty verdict in the hypothetical trial condition (the fair trial without error).
+#' @param pg_hypo The proportion of jurors who favor a guilty verdict in the
+#'                hypothetical trial condition (the fair trial without error).
 #' @param n_hypo The size of the sample used to estimate pg_hypo.
 #' @param jury_n Size of the jury (i.e. 6, 8, or 12); default value is 12.
 #' @param pstrikes Number of peremptory strikes by prosecution; default value is 0.
 #' @param dstrikes Number of peremptory strikes by defendant; default value is 0.
-#' @param accuracy Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.
+#' @param accuracy Accuracy of parties' peremptory strikes; a number between 0 and 1;
+#'                 default value is .15.
 #' @param digits Number of digits to report after decimal places; default value is 3.
 #' @return Returns a list of jury-level statistics to assess effect of a trial error.
-#' @description Calculates jury-level differences based on juror-level statistics supplied by user.
+#'         Returned list includes statistics for actual jury, hypothetical jury, and
+#'         the difference between them.
+#' @description Calculates jury-level statistics and differences based on juror-level
+#'              statistics supplied by user.
 #' @examples
 #'    library(sate)
 #'    compare.jury.stats(pg_actual=.70, n_actual=400, pg_hypo=.60, n_hypo=450)
@@ -39,10 +46,13 @@ compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
   PG_diff = actual_jury_stats$PG - hypo_jury_stats$PG
   SE_diff = base::sqrt(actual_jury_stats$SE^2 + hypo_jury_stats$SE^2)
   CI_diff = CI90(m=PG_diff, se=SE_diff)
+  MOE = (CI_diff[2] - CI_diff[1]) / 2
   base::names(CI_diff) <- base::c("Lower 5%", "Upper 95%")
+
+  difference_table <- round(data.frame(PG_diff, SE_diff, MOE, CI_diff[1], CI_diff[2], row.names = ""), digits)
+  colnames(difference_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+
   return(base::list(actual_jury=actual_jury_stats,
-              hypo_jury=hypo_jury_stats,
-              PG_diff=round(PG_diff, digits),
-              SE_diff=round(SE_diff, digits),
-              CI_diff=round(CI_diff, digits)))
+                    hypo_jury=hypo_jury_stats,
+                    difference=difference_table))
 }

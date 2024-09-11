@@ -45,11 +45,14 @@ sim.compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=1
   PG_diff = actual_jury_sim_stats$PG - hypo_jury_sim_stats$PG
   SE_diff = base::sqrt(actual_jury_sim_stats$SE^2 + hypo_jury_sim_stats$SE^2)
   CI_diff = CI90(m=PG_diff, se=SE_diff)
+  MOE <- base::as.numeric((CI_diff[2] - CI_diff[1]) / 2)
   base::names(CI_diff) <- base::c("Lower 5%", "Upper 95%")
+
+  difference_table <- round(data.frame(PG_diff, SE_diff, MOE, CI_diff[1], CI_diff[2], row.names = ""), digits)
+  colnames(difference_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+
   return(base::list(actual_jury=actual_jury_sim_stats,
-              hypo_jury=hypo_jury_sim_stats,
-              PG_diff=base::round(PG_diff, digits),
-              SE_diff=base::round(SE_diff, digits),
-              CI_diff=base::round(CI_diff, digits)))
+                    hypo_jury=hypo_jury_sim_stats,
+                    difference=difference_table))
 
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/compare.jury.stats.r
 \name{compare.jury.stats}
 \alias{compare.jury.stats}
-\title{Estimates jury-level differences based on juror-level statistics with inferential statistics}
+\title{Estimates jury-level differences based on juror-level statistics with inferential
+statistics}
 \usage{
 compare.jury.stats(
   pg_actual,
@@ -17,11 +18,13 @@ compare.jury.stats(
 )
 }
 \arguments{
-\item{pg_actual}{The proportion of jurors who favor a guilty verdict in the actual trial condition (the trial with error).}
+\item{pg_actual}{The proportion of jurors who favor a guilty verdict in the
+actual trial condition (the trial with error).}
 
 \item{n_actual}{The size of the sample used to estimate pg_actual.}
 
-\item{pg_hypo}{The proportion of jurors who favor a guilty verdict in the hypothetical trial condition (the fair trial without error).}
+\item{pg_hypo}{The proportion of jurors who favor a guilty verdict in the
+hypothetical trial condition (the fair trial without error).}
 
 \item{n_hypo}{The size of the sample used to estimate pg_hypo.}
 
@@ -31,15 +34,19 @@ compare.jury.stats(
 
 \item{dstrikes}{Number of peremptory strikes by defendant; default value is 0.}
 
-\item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
+\item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1;
+default value is .15.}
 
 \item{digits}{Number of digits to report after decimal places; default value is 3.}
 }
 \value{
 Returns a list of jury-level statistics to assess effect of a trial error.
+        Returned list includes statistics for actual jury, hypothetical jury, and
+        the difference between them.
 }
 \description{
-Calculates jury-level differences based on juror-level statistics supplied by user.
+Calculates jury-level statistics and differences based on juror-level
+             statistics supplied by user.
 }
 \examples{
    library(sate)

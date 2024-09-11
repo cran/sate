@@ -32,7 +32,7 @@ sim.as.jury.stats = function(sample_pg, sample_n, jury_n=12,
   if(!base::is.numeric(sample_pg) || (sample_pg < 0) || (sample_pg > 1)) stop("sample_pg must be number between 0 and 1.")
   if(base::missing(sample_n)) stop("Missing sample_n value.")
   if(!base::is.numeric(sample_n) || (sample_n <= 0)) stop("sample_n must be positive number.")
-  base::cat("This function is computationally intensive. Please be patient.\n")
+  if(nDraws > 10000) base::cat("This function is computationally intensive. Please be patient.\n\n")
 
   base::set.seed(seed) # set seed to be able to replicate exact numbers
   # coef and vcov based on empircal analysis
@@ -43,6 +43,8 @@ sim.as.jury.stats = function(sample_pg, sample_n, jury_n=12,
   # jury_PG_point_est <- exp(linear_pred_point) / (1 + exp(linear_pred_point))
   # vector of pg_draws for jury pool based on sample_pg
   pg_draws = stats::rnorm(nDraws, sample_pg, se.prop(p=sample_pg, n=sample_n))
+  pg_draws[pg_draws < 0] <- 0
+  pg_draws[pg_draws > 1] <- 1
   # vectors of model slopes and intercepts give estimation uncertainty
   coef_draw = MASS::mvrnorm(n=nDraws, mu=juries_glm_coef, Sigma=juries_glm_vcov)
   intercept_draws <- coef_draw[,1]
@@ -58,12 +60,21 @@ sim.as.jury.stats = function(sample_pg, sample_n, jury_n=12,
     jury_PG_estimates[i] <- base::sum(prob_k_given_pg*jury_PG_by_k)
   }
 
+  PG <- mean(jury_PG_estimates)
   CI90 <- stats::quantile(x = jury_PG_estimates, probs = base::c(.05, .95))
-  se_PG_estimates <- base::as.numeric((CI90[2] - CI90[1]) / (qnorm(.95) - qnorm(.05)))
-  base::names(CI90) <- base::c("Lower 90% CI", "Upper 90% CI")
+  SE <- base::as.numeric((CI90[2] - CI90[1]) / (qnorm(.95) - qnorm(.05)))
+  MOE <- base::as.numeric((CI90[2] - CI90[1]) / 2)
+  CI_PG_lower <- CI90[1]
+  CI_PG_upper <- CI90[2]
+  # base::names(CI90) <- base::c("Lower 90% CI", "Upper 90% CI")
 
-  return(base::list(PG=base::round(mean(jury_PG_estimates), digits),
-              SE=base::round(se_PG_estimates, digits),
-              CI=base::round(CI90, digits)))
+  # return(base::list(PG=base::round(mean(jury_PG_estimates), digits),
+  #             SE=base::round(se_PG_estimates, digits),
+  #             CI=base::round(CI90, digits)))
+
+  results_table <- round(data.frame(PG, SE, MOE, CI_PG_lower, CI_PG_upper, row.names = ""), digits)
+  base::names(results_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+  return(results_table)
+
 }
 

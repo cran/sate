@@ -26,6 +26,7 @@ as.jury.stats <- function(sample_pg, sample_n, jury_n=12,
   if(base::missing(sample_n)) stop("Missing sample_n value.")
   if(!base::is.numeric(sample_n) || (sample_n <= 0)) stop("Initial sample_n must be positive number")
 
+  PG <- as.jury.point(sample_pg, jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
   se_pg <- se.prop(p=sample_pg, n=sample_n)
   # print(CI90(m=sample_pg, se=se_pg))
   ci90 <- CI90(m=sample_pg, se=se_pg)
@@ -35,9 +36,10 @@ as.jury.stats <- function(sample_pg, sample_n, jury_n=12,
   CI_PG_lower <- as.jury.point(sample_pg=ci90[1], jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
   CI_PG <- base::c(CI_PG_lower, CI_PG_upper)
   SE <- (CI_PG_upper - CI_PG_lower) / (stats::qnorm(.95) - stats::qnorm(.05))
+  MOE <- (CI_PG_upper - CI_PG_lower) / 2
   # print(CI_PG)
   base::names(CI_PG) <- base::c("Lower 5%", "Upper 95%")
-  return(list(PG=round(as.jury.point(sample_pg, jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy), digits),
-              SE=round(SE, digits),
-              CI=round(CI_PG, digits)))
+  results_table <- round(data.frame(PG, SE, MOE, CI_PG_lower, CI_PG_upper, row.names = ""), digits)
+  base::names(results_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+  return(results_table)
 }

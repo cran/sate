@@ -40,6 +40,7 @@ graph.estimate <- function(sample_pg, sample_n, jury_n=12, pstrikes=0, dstrikes=
        labels=base::c("","0",".1",".2",".3",".4",".5",".6",".7",".8",".9","1"),
        cex.axis=.9, line=0, hadj=.5, padj=0)
 
+  # plot.ellipse is a helper function
   plot.ellipse(pg=sample_pg, n=sample_n, jury_n=jury_n, point.col="gray25", pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
   graphics::mtext(text="Jurors' Verdict Preferences, P(g)", side=1, line=2.5, cex=.9)
   graphics::mtext(text="Jury Verdict Probabilities, P(G)", side=2, line=2, cex=.9)

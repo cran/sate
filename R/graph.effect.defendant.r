@@ -58,14 +58,19 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
   graphics::mtext(text="Jurors' Verdict Preferences, P(g)", side=1, line=2.5, cex=.9)
   graphics::mtext(text="Jury Verdict Probabilities, P(G)", side=2, line=2, cex=.9)
 
-  graphics::legend(x=.60, y=.2, legend=base::c("Actual Trial", "Hypothetical Trial", "Trial Error Effect", "Confidence Interval"),
+  graphics::legend(x=.50, y=.2, legend=base::c("Actual trial", "Hypothetical trial",
+                                               "Trial error effect", "Confidence interval"),
          col=base::c("black", "black", "black", "gray25"),
-         pch=base::c(16, 1, 10, -1), lty=c(-1, -1, -1, 3), cex=1.2, pt.cex=base::c(1.2, 1.2, 1.2, -1),
+         pch=base::c(16, 1, 7, -1), lty=c(-1, -1, -1, 3), cex=1.2, pt.cex=base::c(1.2, 1.2, 1.2, -1),
          box.col="#FFFFFF60", bg="#FFFFFF60")
+  graphics::box()
+  # right hand side plot of effect size
+
+
 
   effect.stats <- compare.jury.stats(pg_actual=pg_actual, n_actual=n_actual,
                                      pg_hypo=pg_hypo, n_hypo=n_hypo, jury_n=jury_n,
-                                     pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+                                     pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)$difference
   Tvalue <- .10
   graphics::par(mar=c(4, 5, 3, 1), family="serif")
   graphics::plot(x="", y="",
@@ -81,11 +86,18 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
 
   # showing effect CI
   horizontal_placement <- .05
-  graphics::segments(y0=effect.stats$CI_diff["Lower 5%"],  x0 = horizontal_placement,
-           y1=effect.stats$CI_diff["Upper 95%"], x1 = horizontal_placement, lty=3, col="black")
-  graphics::points(y=base::c(effect.stats$PG_diff, effect.stats$PG_diff),
-         x=base::c(horizontal_placement, horizontal_placement),
-         pch=base::c(16, 10), col=base::c("white","black"), cex=c(1.1,1.1)) #
+  graphics::segments(y0=effect.stats$`Lower 5%`,  x0 = horizontal_placement,
+                     y1=effect.stats$`Upper 95%`, x1 = horizontal_placement, lty=3, col="black")
+
+  # poly_scale = .02
+  # graphics::polygon(x= horizontal_placement + poly_scale*c(cos(pi/4), cos(pi), cos(7*pi/4)),
+  #                   y= effect.stats$PG + poly_scale*c(sin(pi/4), sin(pi), sin(7*pi/4)),
+  #                   border = "black", col="gray20") #
+
+  graphics::points(y=effect.stats$PG, x=horizontal_placement,
+                   pch=15, col="white", cex=1.5) #
+  graphics::points(y=effect.stats$PG, x=horizontal_placement,
+                   pch=7, col="black", cex=1.5) #
   graphics::mtext(text=base::c("No\nHarm", "Tolerable\nHarm", "Intolerable\nHarm"), at=base::c(-.11, .05, .30),
         side=2, cex=.8, line=3.5, las=2, adj=.5)
 }

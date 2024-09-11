@@ -28,7 +28,8 @@ A vector of probabilities for 0:jury_n initial guilty votes
 }
 \description{
 Calculates and returns probability distribution of initial votes for guilty verdict
-             from 0:jury_n with options for peremptory strikes and strike accuracy
+             from 0:jury_n with options for peremptory strikes and strike accuracy. To select jury
+             without strikes, keep pstrikes=0 and dstrikes=0.
 }
 \examples{
    library(sate)

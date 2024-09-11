@@ -13,7 +13,7 @@ as.jury.point(
 )
 }
 \arguments{
-\item{sample_pg}{Proportion of jurors who favor a guilty verdict; a number between 0 and 1.}
+\item{sample_pg}{Proportion of jurors who favor a guilty verdict. Can be a single number between 0 and 1, or a vector of such numbers.}
 
 \item{jury_n}{Size of the jury (i.e. 6, 8, or 12); default value is 12.}
 
@@ -24,10 +24,10 @@ as.jury.point(
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
 }
 \value{
-Returns the probability jury finds defendant guilty.
+Returns the probability jury finds defendant guilty (if sample_pg is a single number) or vector of such probabilities (if sample_pg is a vector).
 }
 \description{
-Calculates probability jury finds defendant guilty based on verdict preferences of jury pool.
+Calculates the probability that jury of size jury_n finds defendant guilty given on preferences of jury pool (inputted as sample_pg).
              Does not estimate uncertainty (use as.jury.stats function for inferential statistics).
 }
 \examples{

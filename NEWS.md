@@ -1,4 +1,22 @@
 
+sate v2.2.0 (Release date: TBD 2024-09-11)
+==============
+
+Minor Changes:
+
+* Update the P(G|k) values supplied by the helper function get.model.values. Updated
+  values based on matrix algebra rather than computer simulation. Differences extremely
+  minor, but additional jury sizes added.
+* Introduced get_pG_by_k function. This function allows user to calculate P(G|k) values
+  for juries with 3 or more members. 
+* Improved formatting of results table returned by as.jury.stats, compare.jury.stats,  
+  sim.as.jury.stats, and sim.compare.jury.stats functions.
+* Added margin of error (MOE) to results tables reported by as.jury.stats, 
+  compare.jury.stats, sim.as.jury.stats, and sim.compare.jury.stats functions.
+* Fixed minor bug with randomly draw proportions falling outside [0, 1] interval.
+* Improved documentation of functions.
+
+
 sate v2.1.0 (Release date: 2023-12-20)
 ==============
 
