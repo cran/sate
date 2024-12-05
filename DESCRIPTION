@@ -1,8 +1,8 @@
 Package: sate
 Type: Package
 Title: Scientific Analysis of Trial Errors (SATE)
-Version: 2.2.0
-Authors@R: person("Barry", "Edwards", email = "barry.edwards@ucf.edu", role = c("aut", "cre"))
+Version: 2.2.1
+Authors@R: person("Barry", "Edwards", email = "bce@uga.edu", role = c("aut", "cre"))
 Description: Bundles functions used to analyze the harmfulness of trial errors in criminal trials.
     Functions in the Scientific Analysis of Trial Errors ('SATE') package help users estimate the 
     probability that a jury will find a defendant guilty given jurors' preferences for a guilty 
@@ -17,8 +17,8 @@ Depends: R (>= 3.0)
 Imports: stats, ellipse, graphics, MASS
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2024-09-11 20:55:39 UTC; Barry Edwards
+Packaged: 2024-12-04 19:01:02 UTC; Barry Edwards
 Author: Barry Edwards [aut, cre]
-Maintainer: Barry Edwards <barry.edwards@ucf.edu>
+Maintainer: Barry Edwards <bce@uga.edu>
 Repository: CRAN
-Date/Publication: 2024-09-11 21:10:02 UTC
+Date/Publication: 2024-12-05 08:30:06 UTC
