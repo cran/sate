@@ -14,7 +14,6 @@
 #'    graph.estimate(sample_pg=.70, sample_n=400)
 #'
 #'    graph.estimate(sample_pg=.75, sample_n=450, jury_n=6, pstrikes=3, dstrikes=3)
-# @importFrom base c is.numeric missing seq
 #' @importFrom graphics abline axis legend lines mtext par plot
 #' @export
 graph.estimate <- function(sample_pg, sample_n, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)

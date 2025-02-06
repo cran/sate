@@ -12,7 +12,6 @@
 #'    deliberate(g_votes=10, jury_n=12)
 #'
 #'    deliberate(g_votes=4, jury_n=6)
-# @importFrom base ifelse is.numeric missing
 #' @importFrom stats rbinom
 #' @export
 deliberate <- function(g_votes, jury_n)

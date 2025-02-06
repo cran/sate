@@ -21,7 +21,6 @@
 #'
 #'    sim.as.jury.stats(sample_pg=10/12, sample_n=295, pstrikes=6, dstrikes=10, nDraws=1000)
 #' @export
-# @importFrom base c cat exp is.numeric list matrix missing names rep round set.seed sum
 #' @importFrom MASS mvrnorm
 #' @importFrom stats rnorm
 sim.as.jury.stats = function(sample_pg, sample_n, jury_n=12,

@@ -16,7 +16,6 @@
 #'
 #'    select.with.strikes(p_g=.75, jury_n=12, pstrikes=6, dstrikes=10)
 #'
-# @importFrom base is.numeric matrix missing rep sum
 #' @importFrom stats dbinom
 #' @export
 select.with.strikes = function(p_g, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)

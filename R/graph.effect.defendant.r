@@ -17,7 +17,6 @@
 #'
 #'    graph.effect.defendant(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
 #'                          jury_n=6, pstrikes=3, dstrikes=3)
-# @importFrom base c is.numeric missing seq
 #' @importFrom graphics axis layout legend lines mtext par points plot rect segments
 #' @export
 graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
@@ -94,9 +93,9 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
   #                   y= effect.stats$PG + poly_scale*c(sin(pi/4), sin(pi), sin(7*pi/4)),
   #                   border = "black", col="gray20") #
 
-  graphics::points(y=effect.stats$PG, x=horizontal_placement,
+  graphics::points(y=effect.stats["Difference in P(G)"], x=horizontal_placement,
                    pch=15, col="white", cex=1.5) #
-  graphics::points(y=effect.stats$PG, x=horizontal_placement,
+  graphics::points(y=effect.stats["Difference in P(G)"], x=horizontal_placement,
                    pch=7, col="black", cex=1.5) #
   graphics::mtext(text=base::c("No\nHarm", "Tolerable\nHarm", "Intolerable\nHarm"), at=base::c(-.11, .05, .30),
         side=2, cex=.8, line=3.5, las=2, adj=.5)

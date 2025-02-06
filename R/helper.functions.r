@@ -1,4 +1,69 @@
 
+
+
+#' Helper function to calculate the 90 percent confidence interval of a proportion.
+#'
+#' @param p The sample proportion (e.g. proportion of of jurors who favor a guilty verdict).
+#' @param se The standard error of the sample proportion, p.
+#' @return Returns the 90 percent confidence interval as a list.
+#' @description Calculates the 90 percent confidence interval of a proportion. 90 percent confidence interval used to test one-sided hypothesis at .05 level.
+#' @examples
+#'    library(sate)
+#'    CI90(m=.5, se=.04)
+#'
+#'    CI90(m=10/12, se=.02)
+#' @keywords internal
+#' @importFrom stats qnorm
+#' @noRd
+CI90 <- function (m, se)
+{
+  if(base::missing(m)) stop("Missing m value.")
+  if(!base::is.numeric(m)) stop("m must be a number.")
+  if(base::missing(se)) stop("Missing se value.")
+  if(!base::is.numeric(se) || (se < 0)) stop("se must be non-negative number.")
+
+  lower = m - stats::qnorm(0.95) * se
+  upper = m + stats::qnorm(0.95) * se
+  out1 = base::c(lower, upper)
+  # print(out1)
+  base::names(out1) = base::c("Lower 90% CI", "     Upper 90% CI")
+  return(out1)
+}
+
+
+
+#' Creates the shell of a plot used to display estimate of harm relative to harm threshold
+#'
+#' @return No return
+#' @description Creates the shell of a plot used for compact display estimate of harm estimate
+#'              relative to harm thresholds.
+#' @examples
+#'    library(sate)
+#'    compact_harm_plot()
+#' @export
+#' @importFrom graphics axis mtext par plot rect
+compact_harm_plot <- function()
+{
+
+  revert.par <- graphics::par(c("mar", "family", "mfrow", "mgp"))
+  graphics::par(mar=base::c(2.5, 1, 1, 1), family="serif", mfrow=base::c(1,1), mgp=base::c(0,.5,.5))
+  Tvalue <- .10
+  graphics::plot(x="", y="", xlab="", ylab="",
+       xlim=base::c(-.1, .425), ylim=base::c(0, .1), axes=F)
+  graphics::axis(side=1, at=base::c(-.5,-.1,0,.1,.2,.3,.4,.5,.6),
+       labels=base::c("","-.1",".0", ".1", ".2", ".3",".4",".5",""),
+       line=.1, cex.axis=.7, gap.axis=0)
+
+  graphics::rect(ybottom=-1, ytop=1, xleft=-1, xright=0, col = "white", border = F)
+  graphics::rect(ybottom=-1, ytop=1, xleft=0, xright=Tvalue, col = "gray90", border = F)
+  graphics::rect(ybottom=-1, ytop=1, xleft=Tvalue, xright=1, col = "gray80", border = F)
+  graphics::mtext(text=base::c("No Harm", "Tolerable Harm", "Intolerable Harm"),
+                  at=base::c(-.08, .05, .25), side=3, cex=.75, line=.20)
+  graphics::par(revert.par)
+
+}
+
+
 #' Helper function to retrieve P(G|K) values.
 #'
 #' @param jury_n Size of the jury (i.e. 4, 6, 8, 12, or 16).
@@ -11,7 +76,6 @@
 #'
 #'    get.model.values(jury_n=8)
 #' @keywords internal
-# @importFrom base c is.null is.numeric message missing
 #' @noRd
 get.model.values <- function(jury_n)
 {
@@ -51,67 +115,6 @@ get.model.values <- function(jury_n)
 
 
 
-#' Helper function to Calculate the standard error of proportion.
-#'
-#' @param p The proportion (e.g. proportion of jurors who favor a guilty verdict).
-#' @param n The size of the sample used to estimate p.
-#' @return Returns the standard error of a sample proportion.
-#' @description Calculates the standard error of proportion.
-#' @examples
-#'    library(sate)
-#'    se.prop(p=.50, n=500)
-#'
-#'    se.prop(p=10/12, n=400)
-#' @keywords internal
-# @importFrom base is.numeric missing sqrt
-#' @noRd
-se.prop <- function(p, n)
-{
-  if(base::missing(p)) stop("Missing p value.")
-  if(!base::is.numeric(p) || (p < 0) || (p > 1)) stop("p must be number between 0 and 1.")
-  if(base::missing(n)) stop("Missing n value.")
-  if(!base::is.numeric(n) || (n <= 0)) stop("Initial n must be positive number.")
-
-  se = base::sqrt(p*(1-p)/n)
-  # print(se)
-  return(se)
-}
-
-
-#' Helper function to calculate the 90 percent confidence interval of a proportion.
-#'
-#' @param p The sample proportion (e.g. proportion of of jurors who favor a guilty verdict).
-#' @param se The standard error of the sample proportion, p.
-#' @return Returns the 90 percent confidence interval as a list.
-#' @description Calculates the 90 percent confidence interval of a proportion. 90 percent confidence interval used to test one-sided hypothesis at .05 level.
-#' @examples
-#'    library(sate)
-#'    CI90(m=.5, se=.04)
-#'
-#'    CI90(m=10/12, se=.02)
-#' @keywords internal
-#' @importFrom stats qnorm
-# @importFrom base c is.numeric missing names
-#' @noRd
-CI90 <- function (m, se)
-{
-  if(base::missing(m)) stop("Missing m value.")
-  if(!base::is.numeric(m)) stop("m must be a number.")
-  if(base::missing(se)) stop("Missing se value.")
-  if(!base::is.numeric(se) || (se < 0)) stop("se must be non-negative number.")
-
-  lower = m - stats::qnorm(0.95) * se
-  upper = m + stats::qnorm(0.95) * se
-  out1 = base::c(lower, upper)
-  # print(out1)
-  base::names(out1) = base::c("Lower 90% CI", "     Upper 90% CI")
-  return(out1)
-}
-
-
-
-
-
 #' Helper function use to plot point estimates with confidence intervals
 #'
 #' @param pg The proportion of jurors who favor a guilty verdict
@@ -132,7 +135,6 @@ CI90 <- function (m, se)
 #'    plot.ellipse(pg=.75, n=450, jury_n=6, pstrikes=3, dstrikes=3)
 #' @keywords internal
 #' @importFrom ellipse ellipse
-# @importFrom base c is.numeric matrix missing sqrt
 #' @importFrom graphics lines points polygon
 #' @noRd
 plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstrikes=0, accuracy=.15)
@@ -160,4 +162,32 @@ plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstri
   graphics::points(x=pg, y=jury.stats$PG, col=point.col, pch=16)
   graphics::points(x=pg, y=jury.stats$PG, col="black", pch=1)
 }
+
+
+#' Helper function to Calculate the standard error of proportion.
+#'
+#' @param p The proportion (e.g. proportion of jurors who favor a guilty verdict).
+#' @param n The size of the sample used to estimate p.
+#' @return Returns the standard error of a sample proportion.
+#' @description Calculates the standard error of proportion.
+#' @examples
+#'    library(sate)
+#'    se.prop(p=.50, n=500)
+#'
+#'    se.prop(p=10/12, n=400)
+#' @keywords internal
+#' @noRd
+se.prop <- function(p, n)
+{
+  if(base::missing(p)) stop("Missing p value.")
+  if(!base::is.numeric(p) || (p < 0) || (p > 1)) stop("p must be number between 0 and 1.")
+  if(base::missing(n)) stop("Missing n value.")
+  if(!base::is.numeric(n) || (n <= 0)) stop("Initial n must be positive number.")
+
+  se = base::sqrt(p*(1-p)/n)
+  # print(se)
+  return(se)
+}
+
+
 

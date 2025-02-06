@@ -13,7 +13,6 @@
 #'    deliberate.civil(p_votes=8, jury_n=12)
 #'
 #'    deliberate.civil(p_votes=5, jury_n=6)
-# @importFrom base ifelse is.numeric message missing
 #' @importFrom stats rbinom
 #' @export
 deliberate.civil <- function(p_votes, jury_n)

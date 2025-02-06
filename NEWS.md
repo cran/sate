@@ -1,4 +1,21 @@
 
+sate v2.3.0 (Release date: TBD 2024-09-11)
+==============
+
+Minor Changes:
+
+* Added compare.juror.stats function for comparing and evaluating difference between juror 
+  verdict preferences in actual and hypothetical trial conditions.
+* Added three functions to assist in calculating sampling weights to represent key demographic
+  characteristics of a state or USA. Apply the encode.cloud.respondents.variables function to 
+  respondent information reported by Cloud Research. Use target.population.demographics to obtain
+  demographic statistics for target population. Use weights_for_population to calculate sampling 
+  weights that balance respondent demographics relative to target population. 
+* Added basic.plot.grid function to create basic plot element that can then be customized.
+* Improved reporting of estimated values in tables.
+* Improved documentation of functions.
+
+
 sate v2.2.0 (Release date: TBD 2024-09-11)
 ==============
 

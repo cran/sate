@@ -25,7 +25,6 @@
 #'
 #'    compare.jury.stats(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
 #'                       jury_n=6, pstrikes=3, dstrikes=3)
-# @importFrom base c is.numeric list missing names sqrt
 #' @export
 compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
                               pstrikes=0, dstrikes=0, accuracy=.15, digits=3)
@@ -41,8 +40,10 @@ compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
 
   actual_jury_stats <- as.jury.stats(sample_pg=pg_actual, sample_n=n_actual,
                                      jury_n=jury_n, digits=digits, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+
   hypo_jury_stats <- as.jury.stats(sample_pg=pg_hypo, sample_n=n_hypo,
                                    jury_n=jury_n, digits=digits, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+
   PG_diff = actual_jury_stats$PG - hypo_jury_stats$PG
   SE_diff = base::sqrt(actual_jury_stats$SE^2 + hypo_jury_stats$SE^2)
   CI_diff = CI90(m=PG_diff, se=SE_diff)
@@ -50,7 +51,11 @@ compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
   base::names(CI_diff) <- base::c("Lower 5%", "Upper 95%")
 
   difference_table <- round(data.frame(PG_diff, SE_diff, MOE, CI_diff[1], CI_diff[2], row.names = ""), digits)
-  colnames(difference_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+  colnames(difference_table) <- base::c("Difference in P(G)", "SE", "MOE", "Lower 5%", "Upper 95%")
+
+  # names added for display purposes
+  names(actual_jury_stats) <- c("P(G|actual)", "SE", "MOE", "Lower 5%", "Upper 95%")
+  names(hypo_jury_stats) <- c("P(G|hypo)", "SE", "MOE", "Lower 5%", "Upper 95%")
 
   return(base::list(actual_jury=actual_jury_stats,
                     hypo_jury=hypo_jury_stats,

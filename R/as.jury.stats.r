@@ -15,7 +15,6 @@
 #'    as.jury.stats(sample_pg=.50, sample_n=830)
 #'
 #'    as.jury.stats(sample_pg=10/12, sample_n=295)
-# @importFrom base c is.numeric missing names
 #' @importFrom stats qnorm
 #' @export
 as.jury.stats <- function(sample_pg, sample_n, jury_n=12,

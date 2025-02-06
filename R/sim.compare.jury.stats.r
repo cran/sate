@@ -22,7 +22,6 @@
 #'    sim.compare.jury.stats(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
 #'                       seed=12345, nDraws=1000)
 #' @export
-# @importFrom base c is.numeric list missing names round sqrt
 sim.compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12, digits=3,
                                   pstrikes=0, dstrikes=0, accuracy=.15, seed=12345, nDraws=10000)
 {

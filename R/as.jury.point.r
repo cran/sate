@@ -14,7 +14,6 @@
 #'
 #'    as.jury.point(sample_pg = 10/12)
 #' @export
-# @importFrom base is.numeric length missing rep sum
 as.jury.point <- function(sample_pg, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)
 {
   if(base::missing(sample_pg)) stop("Missing sample_pg value.")
