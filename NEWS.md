@@ -1,5 +1,15 @@
 
-sate v2.3.0 (Release date: TBD 2024-09-11)
+
+sate v2.4.0 (Release date: TBD 2024-03-04)
+==============
+
+Minor Changes:
+
+* Added observed.deliberation dataset, a compilation of observed deliberation outcomes
+  that is useful to estimate relationship between initial jury poll and trial verdicts.
+
+
+sate v2.3.0 (Release date: 2024-09-11)
 ==============
 
 Minor Changes:
@@ -16,7 +26,7 @@ Minor Changes:
 * Improved documentation of functions.
 
 
-sate v2.2.0 (Release date: TBD 2024-09-11)
+sate v2.2.0 (Release date: 2024-09-11)
 ==============
 
 Minor Changes:

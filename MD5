@@ -1,12 +1,12 @@
-7c1d1a9060351df7053d1de0d8feb98f *DESCRIPTION
+22b4b6dfad9d3a097686f18714074e6c *DESCRIPTION
 32dde44a7bc2077df93e115c403dcbf3 *NAMESPACE
-38566c77d04b0a81e726a33d97cf3537 *NEWS.md
+333c2f7b702165db5366dff9d748e376 *NEWS.md
 21441c8d2472a7442bf3f2043a18968a *R/as.jury.point.r
 162737abe2c10c2076d6606475e928fa *R/as.jury.stats.r
 b8a8de861450798f7ee74c7ba9849543 *R/basic.plot.grid.R
 ddf1f9cb9c8e51337a85f93cf67427a3 *R/compare.juror.stats.R
 6fdc12a027961b241b64c151692b07f7 *R/compare.jury.stats.r
-a269f31c8dea1fc6269712e3e4678854 *R/data.R
+65d39ddd58335e6754ec96610ca39916 *R/data.R
 560545994396893acd87660ca2865103 *R/deliberate.civil.r
 9febda255f9a301ddac4eff558d07d7d *R/deliberate.r
 1fe29fd953b20fa3dfde9814b1398dcb *R/encode.cloud.respondent.variables.R
@@ -20,6 +20,7 @@ c789ed1ae42cdf5f1e19ab378c939192 *R/sim.compare.jury.stats.r
 b116c0f0b9759d9496de22589885223b *R/sysdata.rda
 a80f65a6aaf59c0696e096f5f23ece38 *R/target.population.demographics.R
 666de2d6d9a1411050dc9866ef4cdfd6 *R/weights_for_population.R
+32c415c69597a0cda62397dfa76dfc10 *data/observed.deliberations.rda
 c6da1e03ba93bf508bc3de30c4ff031b *data/state.demographic.info.rda
 6f1903d28578bcf278dd8803f4d9afd4 *man/as.jury.point.Rd
 1d1de69e69bf760a05dd6921f2ba17c0 *man/as.jury.stats.Rd
@@ -33,6 +34,7 @@ c6da1e03ba93bf508bc3de30c4ff031b *data/state.demographic.info.rda
 ffde4de883a503468c942d119f99d20a *man/get_pG_by_k.Rd
 3a91fa6a8cf4269163515f05b9be4c07 *man/graph.effect.defendant.Rd
 a0f0f7524ee5efa4817977cb005baa9c *man/graph.estimate.Rd
+2d506e7fdb5af717e71c5441c2cb19ee *man/observed.deliberations.Rd
 f82cfa0b3800b7db6d3d0bc54536c3c4 *man/select.with.strikes.Rd
 2f04b65e56266f5aa47d45bac4ebdfd0 *man/sim.as.jury.stats.Rd
 d9523fb99d162feb43eb2bcf84ebce65 *man/sim.compare.jury.stats.Rd
