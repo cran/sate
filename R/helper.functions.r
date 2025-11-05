@@ -15,7 +15,7 @@
 #' @keywords internal
 #' @importFrom stats qnorm
 #' @noRd
-CI90 <- function (m, se)
+CI90 <- function(m, se)
 {
   if(base::missing(m)) stop("Missing m value.")
   if(!base::is.numeric(m)) stop("m must be a number.")
@@ -64,12 +64,12 @@ compact_harm_plot <- function()
 }
 
 
-#' Helper function to retrieve P(G|K) values.
+#' Helper function to retrieve P(G|K) values. This should be deprecated by get_pG_by_k.
 #'
 #' @param jury_n Size of the jury (i.e. 4, 6, 8, 12, or 16).
 #' @return Returns a vector of guilty verdict probabilities for K values 0 to jury_n.
-#' @description Retrieves vector of P(G|K) values based on jury size. These probabilities
-#'              can be generated but accessing stored values speeds computations.
+#' @description Returns a vector of P(G|K) values based on jury size. Probabilities
+#'              can be generated for any jury_n (greater than 1).
 #' @examples
 #'    library(sate)
 #'    get.model.values(12)
@@ -81,37 +81,16 @@ get.model.values <- function(jury_n)
 {
   if(base::missing(jury_n)) stop("Missing jury_n value.")
   if(!base::is.numeric(jury_n) || (jury_n %% 1 != 0) || (jury_n <= 0)) stop("jury_n must be positive integer.")
-  # this would be better as switch statement
-  # switch will match numeric values by argument position, not value
-  switch(EXPR = as.character(jury_n),
-          "6"={ pG_by_k = c(0, 0.00448, 0.04482, 0.20617, 0.52241, 0.83865, 1) },
-         "12" = { pG_by_k = c(0, 0.00014, 0.00138, 0.00869, 0.03793, 0.11915, 0.27834, 0.50069, 0.72303, 0.88223, 0.96345, 0.99269, 1); },
-          "4" = { pG_by_k = c(0, 0.01667, 0.16667, 0.58333, 1); },
-          "8" = { pG_by_k = c(0, 0.00135, 0.01353, 0.07246, 0.23616, 0.50676, 0.77737, 0.94107, 1); },
-         "10" = { pG_by_k = c(0, 0.00043, 0.00427, 0.02519, 0.09733, 0.25965, 0.50213, 0.74462, 0.90694, 0.97908, 1); },
-         "14" = { pG_by_k = c(0, 5e-05, 0.00045, 0.00298, 0.01427, 0.05084, 0.13819, 0.29348, 0.50023, 0.70697, 0.86226, 0.94961, 0.98618, 0.99747, 1); },
-         "16" = { pG_by_k = c(0, 1e-05, 0.00015, 0.00102, 0.00525, 0.02066, 0.06345, 0.15486, 0.30598, 0.50007, 0.69417, 0.84528, 0.9367, 0.97949, 0.9949, 0.99913, 1); },
-         "18" = { pG_by_k = c(0, 0, 5e-05, 0.00035, 0.0019, 0.00811, 0.02754, 0.07552, 0.16955, 0.31649, 0.50002, 0.68356, 0.8305, 0.92453, 0.97251, 0.99194, 0.99815, 0.9997, 1); },
-         "20" = { pG_by_k = c(0, 0, 2e-05, 0.00012, 0.00068, 0.00311, 0.01147, 0.03469, 0.08694, 0.18259, 0.32547, 0.50001, 0.67455, 0.81743, 0.91307, 0.96533, 0.98855, 0.99691, 0.99933, 0.9999, 1); },
-         "22" = { pG_by_k = c(0, 0, 1e-05, 4e-05, 0.00024, 0.00117, 0.00463, 0.01522, 0.04195, 0.09771, 0.19424, 0.33325, 0.5, 0.66675, 0.80576, 0.9023, 0.95806, 0.98478, 0.99538, 0.99884, 0.99976, 0.99996, 1); },
-         "24" = { pG_by_k = c(0, 0, 0, 1e-05, 9e-05, 0.00043, 0.00182, 0.00645, 0.01928, 0.0492, 0.10782, 0.20473, 0.34008, 0.5, 0.65992, 0.79527, 0.89218, 0.95081, 0.98072, 0.99356, 0.99818, 0.99957, 0.99992, 0.99999, 1); },
-          "5" = { pG_by_k = c(0, 0.00844, 0.08442, 0.34648, 0.73794, 1); },
-          "7" = { pG_by_k = c(0, 0.00244, 0.02443, 0.12241, 0.35643, 0.668, 0.90202, 1); },
-          "9" = { pG_by_k = c(0, 0.00076, 0.00757, 0.04277, 0.15295, 0.36891, 0.63866, 0.85462, 0.9648, 1); },
-         "11" = { pG_by_k = c(0, 0.00024, 0.00242, 0.0148, 0.06109, 0.17784, 0.37997, 0.62244, 0.82458, 0.94133, 0.98762, 1); },
-         "13" = { pG_by_k = c(0, 8e-05, 0.00079, 0.00509, 0.02335, 0.07841, 0.19839, 0.38915, 0.61164, 0.80239, 0.92238, 0.97744, 0.99569, 1); },
-         "15" = { pG_by_k = c(0, 3e-05, 0.00026, 0.00175, 0.00867, 0.03257, 0.09441, 0.21562, 0.39668, 0.60358, 0.78464, 0.90585, 0.96769, 0.99158, 0.99851, 1); },
-         "17" = { pG_by_k = c(0, 1e-05, 9e-05, 6e-04, 0.00316, 0.01299, 0.04205, 0.10907, 0.23027, 0.40293, 0.59715, 0.76982, 0.89102, 0.95803, 0.9871, 0.99692, 0.99949, 1); },
-         "19" = { pG_by_k = c(0, 0, 3e-05, 2e-04, 0.00114, 0.00503, 0.01785, 0.05152, 0.12246, 0.24291, 0.40819, 0.59183, 0.75712, 0.87757, 0.94851, 0.98218, 0.995, 0.99889, 0.99982, 1); },
-         "21" = { pG_by_k = c(0, 0, 1e-05, 7e-05, 0.00041, 0.00191, 0.00731, 0.02309, 0.0608, 0.1347, 0.25394, 0.41269, 0.58732, 0.74607, 0.86531, 0.93921, 0.97691, 0.9927, 0.9981, 0.9996, 0.99994, 1); },
-         "23" = { pG_by_k = c(0, 0, 0, 2e-05, 0.00014, 0.00071, 0.00291, 0.00994, 0.02859, 0.06981, 0.14591, 0.26368, 0.41659, 0.58341, 0.73633, 0.85409, 0.9302, 0.97141, 0.99006, 0.99709, 0.99929, 0.99986, 0.99998, 1); },
-         "25" = { pG_by_k = c(0, 0, 0, 1e-05, 5e-05, 0.00026, 0.00114, 0.00415, 0.01288, 0.03424, 0.07849, 0.15622, 0.27235, 0.42002, 0.57998, 0.72765, 0.84378, 0.92152, 0.96576, 0.98712, 0.99585, 0.99886, 0.99974, 0.99995, 0.99999, 1); },
-         { base::message("Sorry, do not have P(G|k) values for that jury size."); return(NULL) }
-  )
-
+  # jury_n = 12
+  P_matrix <- transition.matrix(jury_n = jury_n)
+  A_matrix <- P_matrix[, c(1, jury_n+1)]
+  R_matrix <- P_matrix[c(1, jury_n+1), -c(1, jury_n+1)]
+  Q_matrix <- P_matrix[-c(1, jury_n+1), -c(1, jury_n+1)]
+  I_matrix <- diag(jury_n - 1)
+  B_matrix <- R_matrix %*% solve(I_matrix - Q_matrix)
+  pG_by_k <- c(0, B_matrix[2,], 1)
   return(pG_by_k)
 }
-
 
 
 
@@ -164,6 +143,40 @@ plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstri
 }
 
 
+
+#' Helper function to obtain expected rounds of deliberation to verdict.
+#'
+#' @param jury_n Size of the jury (i.e. 4, 6, 8, 12, or 16).
+#' @return Returns a vector of expected number of rounds of deliberation to reach a verdict for K values 0 to jury_n.
+#' @description Retrieves vector of P(G|K) values based on jury size. These probabilities
+#'              can be generated but accessing stored values speeds computations.
+#' @examples
+#'    library(sate)
+#'    rounds_to_verdict(12)
+#'
+#'    rounds_to_verdict(jury_n=8)
+#' @keywords internal
+#' @noRd
+rounds_to_verdict <- function(jury_n)
+{
+  if(base::missing(jury_n)) stop("Missing jury_n value.")
+  if(!base::is.numeric(jury_n) || (jury_n %% 1 != 0) || (jury_n <= 0)) stop("jury_n must be positive integer.")
+
+  # rounds to verdict
+  P_matrix <- transition.matrix(jury_n = jury_n)
+  A_matrix <- P_matrix[, c(1, jury_n+1)]
+  R_matrix <- P_matrix[c(1, jury_n+1), -c(1, jury_n+1)]
+  Q_matrix <- P_matrix[-c(1, jury_n+1), -c(1, jury_n+1)]
+  I_matrix <- diag(jury_n - 1)
+  B_matrix <- R_matrix %*% solve(I_matrix - Q_matrix)
+  ones <- rep(1, jury_n - 1)
+  T_transient <- solve(I_matrix - t(Q_matrix), ones)
+  T_all <- c(1, as.numeric(T_transient), 1)
+  return(T_all)
+}
+
+
+
 #' Helper function to Calculate the standard error of proportion.
 #'
 #' @param p The proportion (e.g. proportion of jurors who favor a guilty verdict).
@@ -188,6 +201,4 @@ se.prop <- function(p, n)
   # print(se)
   return(se)
 }
-
-
 

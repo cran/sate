@@ -2,24 +2,24 @@
 % Please edit documentation in R/get_pG_by_k.r
 \name{get_pG_by_k}
 \alias{get_pG_by_k}
-\title{Calculates vector of probabilities that jury with n_jurors will return a guilty verdict}
+\title{Calculates vector of probabilities that jury with jury_n will return a guilty verdict}
 \usage{
-get_pG_by_k(n_jurors = 6)
+get_pG_by_k(jury_n = 6)
 }
 \arguments{
-\item{n_jurors}{Size of the jury (i.e. 6, 8, or 12); default value is 6.}
+\item{jury_n}{Size of the jury (i.e. 6, 8, or 12); default value is 6.}
 }
 \value{
-Returns a vector of probabilities for guilty verdict of size n_jurors + 1.
+Returns a vector of probabilities for guilty verdict of size jury_n + 1.
 }
 \description{
-Calculates a vector probabilities that a jury with n_jurors will return a guilty verdict.
-             The vector represents P(G|k) for 0, 1, 2, ... , n_jurors where k is the number of jurors
+Calculates a vector probabilities that a jury with jury_n will return a guilty verdict.
+             The vector represents P(G|k) for 0, 1, 2, ... , jury_n where k is the number of jurors
              initially in favor of guilty verdict.
 }
 \examples{
    library(sate)
    get_pG_by_k(10)
 
-   get_pG_by_k(n_jurors=12)
+   get_pG_by_k(jury_n=12)
 }

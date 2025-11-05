@@ -57,10 +57,10 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
   graphics::mtext(text="Jurors' Verdict Preferences, P(g)", side=1, line=2.5, cex=.9)
   graphics::mtext(text="Jury Verdict Probabilities, P(G)", side=2, line=2, cex=.9)
 
-  graphics::legend(x=.50, y=.2, legend=base::c("Actual trial", "Hypothetical trial",
+  graphics::legend(x=.50, y=.25, legend=base::c("Actual trial", "Hypothetical trial",
                                                "Trial error effect", "Confidence interval"),
          col=base::c("black", "black", "black", "gray25"),
-         pch=base::c(16, 1, 7, -1), lty=c(-1, -1, -1, 3), cex=1.2, pt.cex=base::c(1.2, 1.2, 1.2, -1),
+         pch=base::c(16, 1, 7, -1), lty=c(-1, -1, -1, 3), cex=1, pt.cex=base::c(1.2, 1.2, 1.2, -1),
          box.col="#FFFFFF60", bg="#FFFFFF60")
   graphics::box()
   # right hand side plot of effect size

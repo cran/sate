@@ -20,7 +20,7 @@ basic.plot.grid <- function(main, xlab, ylab)
   if(base::missing(ylab)) ylab <- "Jury Verdict Probabilities, P(G)"
   if(base::missing(main)) main <- ""
   pg_values_scale <- base::seq(0,1,by=.01)
-  pG_values_scale <- sate::as.jury.point(pg_values_scale, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)
+  pG_values_scale <- as.jury.point(pg_values_scale, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)
   base::data.frame(pg_values_scale, pG_values_scale)
   graphics::plot(x="", y="", xlim=base::c(0,1), ylim=base::c(0,1),
                  xlab="", ylab="", axes=F, main=main, asp=1)

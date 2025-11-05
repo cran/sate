@@ -1,6 +1,37 @@
 
 
-sate v2.4.0 (Release date: TBD 2024-03-04)
+sate v3.1.0 (Release date: TBD, est. 2025-11-05)
+==============
+
+Major Changes:
+
+* Updated get_pG_by_k function. Implemented analytic method for obtaining guilty/death 
+  verdict probabilities given jury size. The analytic solution is based on matrix algebra,
+  not simulation or use of while loop. Improved function used by analysis functions for
+  faster and more precise results.
+* Added transition.matrix function. It returns a transition probability matrix
+  for jury deliberating choice between NG and G verdicts.
+* Added transition.matrix.ordered function. It generates a transition probability matrix
+  for jury deliberating choice among three or more ordered verdict options.
+* Added prob.ordered.verdicts function. It obtain the final (absorbing) state probabilities
+  for jury deliberating among three or more ordered verdict options. This function calls 
+  the transition.matrix.ordered function (which may also be called as stand alone function).
+* Added prob_ord_from_pool function. Given verdict preferences in population from which 
+  jurors are selected, it returns deliberated verdict probabilities for trial jury 
+  deliberating among three or more ordered verdict options. This function calls 
+  the transition.matrix.ordered and prob.ordered.verdicts functions (which may also 
+  be called as stand alone functions).
+
+
+sate v2.5.0 (Release date: 2025-03-04)
+==============
+
+Minor Changes:
+
+* Updated weights_for_population function to handle survey data without missing respondent data.
+
+
+sate v2.4.0 (Release date: 2024-03-04, approx.)
 ==============
 
 Minor Changes:

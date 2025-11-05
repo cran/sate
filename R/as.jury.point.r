@@ -19,7 +19,7 @@ as.jury.point <- function(sample_pg, jury_n=12, pstrikes=0, dstrikes=0, accuracy
   if(base::missing(sample_pg)) stop("Missing sample_pg value.")
   if(!base::is.numeric(sample_pg[1]) || (sample_pg[1] < 0) || (sample_pg[1] > 1)) stop("sample_pg must be number between 0 and 1.")
 
-  prob_G_by_k <- get.model.values(jury_n=jury_n)
+  prob_G_by_k <- get_pG_by_k(jury_n=jury_n)
   jury_PG <- base::rep(NA, length(sample_pg))
   for(i in 1:base::length(sample_pg))
   {

@@ -36,6 +36,7 @@
 #'
 weights_for_population <- function(respondentdata, targetdata)
 {
+  # for debugging purposes: respondentdata <- surveydata
   pop.black <- targetdata$black
   pop.ba_or_more <- targetdata$ba_or_more
   pop.hhincome_over50k <- targetdata$hhincome_over50k
@@ -45,7 +46,7 @@ weights_for_population <- function(respondentdata, targetdata)
 
   respondentdata.all <- respondentdata
   respondentdata.svy.unweighted <- survey::svydesign(ids=~1, weights=~1,
-                                                     data=subset(respondentdata.all, respondentdata.all$respondent_na=="FALSE"))
+                                          data=subset(respondentdata.all, respondentdata.all$respondent_na=="FALSE"))
   nrows <- base::nrow(respondentdata.svy.unweighted$variables)
 
   # population targets multipled by nrow(respondentdata.all)
@@ -65,17 +66,23 @@ weights_for_population <- function(respondentdata, targetdata)
   respondentdata.svy.rake <- survey::trimWeights(respondentdata.svy.rake, upper = 6, lower = .1)
   # there seem to be different rules of thumb but it seems to be a good quality control
 
-  # the rake function can't handle missing data, so need to store separately and then merge
-  weights_data <- base::data.frame(weights = stats::weights(respondentdata.svy.rake), ParticipantId = respondentdata.svy.rake$variables$ParticipantId)
-
-  ##### check this part, it may need to come later or be broken into parts
-  merged_respondentdata <- base::merge(respondentdata.all, weights_data, by = base::c("ParticipantId"), all.x=TRUE)
-  respondentdata.all <- merged_respondentdata # should add one variable (weights) to respondentdata
+  if(sum(respondentdata.all$respondent_na) > 0) {
+    # the rake function can't handle missing data, so need to store separately and then merge
+    weights_data <- base::data.frame(weights = stats::weights(respondentdata.svy.rake),
+                                     ParticipantId = respondentdata.svy.rake$variables$ParticipantId)
+    ##### check this part, it may need to come later or be broken into parts
+    merged_respondentdata <- base::merge(respondentdata.all, weights_data, by = base::c("ParticipantId"), all.x=TRUE)
+    respondentdata.all <- merged_respondentdata # should add one variable (weights) to respondentdata
+  }
+  else {
+    respondentdata.all$weights <- stats::weights(respondentdata.svy.rake)
+  }
 
   # if weight not calculated (respondent info missing), give respondent mean weight
   respondentdata.all$weights[base::is.na(respondentdata.all$weights)] <- base::mean(respondentdata.all$weights, na.rm=T)
   # make sure mean weight = 1
   respondentdata.all$weights <- respondentdata.all$weights / base::mean(respondentdata.all$weights, na.rm=T)
   return(respondentdata.all)
+  # continue debugging: surveydata <- respondentdata.all
 }
 
