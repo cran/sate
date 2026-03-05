@@ -20,9 +20,10 @@
 #' @export
 select.with.strikes = function(p_g, jury_n=12, pstrikes=0, dstrikes=0, accuracy=.15)
 {
-  if(base::missing(p_g)) stop("Missing p_g value.")
-  if(!base::is.numeric(p_g) || (p_g < 0) || (p_g > 1)) stop("p_g must be number between 0 and 1.")
-  if(!base::is.numeric(accuracy) || (accuracy < 0) || (accuracy > 1)) stop("accuracy must be number between 0 and 1.")
+  assert_required(p_g)
+  assert_between_0_1(p_g, accuracy)
+  assert_positive_integer(jury_n)
+  assert_nonnegative_integer(pstrikes, dstrikes)
 
   d_hit_prob = stats::dbinom(x = 0:dstrikes, size = dstrikes, prob = accuracy)
   p_hit_prob = stats::dbinom(x = 0:pstrikes, size = pstrikes, prob = accuracy)

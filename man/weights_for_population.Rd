@@ -7,16 +7,20 @@
 weights_for_population(respondentdata, targetdata)
 }
 \arguments{
-\item{respondentdata}{Dataset with encoded respondent demographic information (use encode.cloud.respondent.variables to prepare respondentdata) must have a ParticipantId variable.}
+\item{respondentdata}{Data frame with encoded respondent demographic information
+(use encode.cloud.respondent.variables to prepare). Must include:
+ParticipantId, black, ba_or_more, hhincome_over50k, age35plus, woman, hispanic, respondent_na.}
 
-\item{targetdata}{A one row data.frame (or named vector) with the following statistics: black, ba_or_more, hhincome_over50k, age35plus, woman, hispanic (use target.population.demographics to obtain)}
+\item{targetdata}{A one-row data.frame (or named vector) with the following statistics
+in [0, 1]: black, ba_or_more, hhincome_over50k, age35plus, woman, hispanic
+(use target.population.demographics to obtain).}
 }
 \value{
 Returns respondentdata with raked sampling weights encoded.
 }
 \description{
 Calculates survey weights given respondent information and target population demographics. Respondent
-             demographic info must be properly encoded in respondentdata to work with the target.demographics. If
+             demographic info must be properly encoded in respondentdata to work with targetdata. If
              respondent demographic info is missing, the respondent's weight will be coded 1. Weight values trimmed
              so that no weights are greater than 6 or less than .1.
 }

@@ -8,6 +8,9 @@
 #' @param pstrikes Number of peremptory strikes by prosecution; default value is 0.
 #' @param dstrikes Number of peremptory strikes by defendant; default value is 0.
 #' @param accuracy Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.
+#' @param simulate Simulation control passed to `compare.jury.stats` and `as.jury.stats`.
+#'   Use `FALSE` (default), `TRUE`, or a named list like `list(nDraws=5000, seed=12345)`.
+#'   For graphing speed, `TRUE` uses `nDraws=2000` by default.
 #' @return No return (creates plots)
 #' @description Plots jury-level differences based on juror-level statistics supplied by user. Point
 #'              estimates supplemented by confidence intervals. Effect-on-defendant also plotted.
@@ -17,19 +20,26 @@
 #'
 #'    graph.effect.defendant(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
 #'                          jury_n=6, pstrikes=3, dstrikes=3)
+#'
+#'    graph.effect.defendant(pg_actual=.70, n_actual=400, pg_hypo=.60, n_hypo=450, simulate=TRUE)
 #' @importFrom graphics axis layout legend lines mtext par points plot rect segments
 #' @export
 graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12,
-                                  pstrikes=0, dstrikes=0, accuracy=.15)
+                                   pstrikes=0, dstrikes=0, accuracy=.15, simulate=FALSE)
 {
-  if(base::missing(pg_actual)) stop("Missing pg_actual value.")
-  if(!base::is.numeric(pg_actual) || (pg_actual < 0) || (pg_actual > 1)) stop("pg_actual must be number between 0 and 1.")
-  if(base::missing(pg_hypo)) stop("Missing pg_hypo value.")
-  if(!base::is.numeric(pg_hypo) || (pg_hypo < 0) || (pg_hypo > 1)) stop("pg_hypo must be number between 0 and 1.")
-  if(base::missing(n_actual)) stop("Missing n_actual value.")
-  if(!base::is.numeric(n_actual) || (n_actual <= 0)) stop("n_actual must be positive number.")
-  if(base::missing(n_hypo)) stop("Missing n_hypo value.")
-  if(!base::is.numeric(n_hypo) || (n_hypo <= 0)) stop("n_hypo must be positive number.")
+  assert_required(pg_actual, n_actual, pg_hypo, n_hypo)
+  assert_between_0_1(pg_actual, pg_hypo, accuracy)
+  assert_positive_numeric(n_actual, n_hypo)
+  assert_positive_integer(jury_n)
+  assert_nonnegative_integer(pstrikes, dstrikes)
+
+  # Graphing uses fewer simulation draws by default for speed.
+  simulate_for_graph <- simulate
+  if (isTRUE(simulate_for_graph)) {
+    simulate_for_graph <- list(nDraws = 2000L, seed = NULL)
+  } else if (is.list(simulate_for_graph) && !("nDraws" %in% names(simulate_for_graph))) {
+    simulate_for_graph$nDraws <- 2000L
+  }
 
   graphics::layout(matrix(c(1,1,1,2), nrow = 1, ncol = 4, byrow = TRUE))
   graphics::par(mar=c(4,4,0,2), omi=base::c(0.1,0.1,0.1,0.1), family="serif")
@@ -40,7 +50,8 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
   # the juror to jury line depends only on jury size (it is not estimated from samples)
   # the line needs to depend on strikes too
   pg_values_scale <- base::seq(0,1,by=.01)
-  pG_values_scale <- as.jury.point(pg_values_scale, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+  pG_values_scale <- as.jury.point(pg_values_scale, jury_n=jury_n, pstrikes=pstrikes,
+                                   dstrikes=dstrikes, accuracy=accuracy, simulate=simulate_for_graph)
   graphics::lines(x=pg_values_scale, y=pG_values_scale, col="gray40", lwd=1, lty=1)
   graphics::axis(side=2, at=base::seq(-.1,1.0,by=.1),
        labels=base::c("","0",".1",".2",".3",".4",".5",".6",".7",".8",".9","1"),
@@ -50,9 +61,11 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
        cex.axis=.9, line=0, hadj=.5, padj=0)
 
   # actual trial
-  plot.ellipse(pg=pg_actual, n=n_actual, jury_n=jury_n, point.col="black", pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+  plot.ellipse(pg=pg_actual, n=n_actual, jury_n=jury_n, point.col="black",
+               pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy, simulate=simulate_for_graph)
   # hypothetical trial
-  plot.ellipse(pg=pg_hypo, n=n_hypo, jury_n=jury_n, point.col="white", pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+  plot.ellipse(pg=pg_hypo, n=n_hypo, jury_n=jury_n, point.col="white",
+               pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy, simulate=simulate_for_graph)
 
   graphics::mtext(text="Jurors' Verdict Preferences, P(g)", side=1, line=2.5, cex=.9)
   graphics::mtext(text="Jury Verdict Probabilities, P(G)", side=2, line=2, cex=.9)
@@ -69,7 +82,15 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
 
   effect.stats <- compare.jury.stats(pg_actual=pg_actual, n_actual=n_actual,
                                      pg_hypo=pg_hypo, n_hypo=n_hypo, jury_n=jury_n,
-                                     pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)$difference
+                                     pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy,
+                                     simulate=simulate_for_graph)$difference
+  effect_value <- if ("Difference in P(G)" %in% names(effect.stats)) {
+    effect.stats[["Difference in P(G)"]]
+  } else if ("PG" %in% names(effect.stats)) {
+    effect.stats[["PG"]]
+  } else {
+    stop("effect.stats must contain 'Difference in P(G)' or 'PG'.", call. = FALSE)
+  }
   Tvalue <- .10
   graphics::par(mar=c(4, 5, 3, 1), family="serif")
   graphics::plot(x="", y="",
@@ -90,12 +111,12 @@ graph.effect.defendant <- function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=
 
   # poly_scale = .02
   # graphics::polygon(x= horizontal_placement + poly_scale*c(cos(pi/4), cos(pi), cos(7*pi/4)),
-  #                   y= effect.stats$PG + poly_scale*c(sin(pi/4), sin(pi), sin(7*pi/4)),
+  #                   y= effect_value + poly_scale*c(sin(pi/4), sin(pi), sin(7*pi/4)),
   #                   border = "black", col="gray20") #
 
-  graphics::points(y=effect.stats["Difference in P(G)"], x=horizontal_placement,
+  graphics::points(y=effect_value, x=horizontal_placement,
                    pch=15, col="white", cex=1.5) #
-  graphics::points(y=effect.stats["Difference in P(G)"], x=horizontal_placement,
+  graphics::points(y=effect_value, x=horizontal_placement,
                    pch=7, col="black", cex=1.5) #
   graphics::mtext(text=base::c("No\nHarm", "Tolerable\nHarm", "Intolerable\nHarm"), at=base::c(-.11, .05, .30),
         side=2, cex=.8, line=3.5, las=2, adj=.5)

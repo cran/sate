@@ -10,7 +10,8 @@ graph.estimate(
   jury_n = 12,
   pstrikes = 0,
   dstrikes = 0,
-  accuracy = 0.15
+  accuracy = 0.15,
+  simulate = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,10 @@ graph.estimate(
 \item{dstrikes}{Number of peremptory strikes by defendant; default value is 0.}
 
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
+
+\item{simulate}{Simulation control passed to `as.jury.stats`. Use `FALSE`
+(default), `TRUE`, or a named list like `list(nDraws=5000, seed=12345)`.
+For graphing speed, `TRUE` uses `nDraws=2000` by default.}
 }
 \value{
 No return (creates plot)
@@ -38,4 +43,6 @@ Plots probability of guilty verdict with confidence interval based on juror-leve
    graph.estimate(sample_pg=.70, sample_n=400)
 
    graph.estimate(sample_pg=.75, sample_n=450, jury_n=6, pstrikes=3, dstrikes=3)
+
+   graph.estimate(sample_pg=.70, sample_n=400, simulate=TRUE)
 }

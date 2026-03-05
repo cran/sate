@@ -1,7 +1,7 @@
 Package: sate
 Type: Package
 Title: Scientific Analysis of Trial Errors (SATE)
-Version: 3.1.0
+Version: 3.1.1
 Authors@R: person("Barry", "Edwards", email = "bce@uga.edu", role = c("aut", "cre"))
 Description: Bundles functions used to analyze the harmfulness of trial errors in criminal trials.
     Functions in the Scientific Analysis of Trial Errors ('sate') package help users estimate the 
@@ -22,10 +22,12 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
 Imports: stats, ellipse, graphics, MASS, survey
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2025-11-05 21:53:20 UTC; Barry Edwards
+Packaged: 2026-03-05 19:16:49 UTC; Barry Edwards
 Author: Barry Edwards [aut, cre]
 Maintainer: Barry Edwards <bce@uga.edu>
 Repository: CRAN
-Date/Publication: 2025-11-05 22:10:02 UTC
+Date/Publication: 2026-03-05 19:40:02 UTC

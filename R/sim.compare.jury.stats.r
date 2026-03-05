@@ -10,7 +10,7 @@
 #' @param pstrikes Number of peremptory strikes by prosecution; default value is 0.
 #' @param dstrikes Number of peremptory strikes by defendant; default value is 0.
 #' @param accuracy Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.
-#' @param seed Set seed for random number generation for replication, default is 12345.
+#' @param seed Optional non-negative integer seed for replication. Default is NULL (no seeding).
 #' @param nDraws The number of simulations used to generate results. Should be very large number (default = 10000).
 #' @return Returns a list of jury-level statistics to assess effect of a trial error.
 #' @description Calculates jury-level differences based on juror-level statistics supplied by user.
@@ -23,16 +23,14 @@
 #'                       seed=12345, nDraws=1000)
 #' @export
 sim.compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=12, digits=3,
-                                  pstrikes=0, dstrikes=0, accuracy=.15, seed=12345, nDraws=10000)
+                                  pstrikes=0, dstrikes=0, accuracy=.15, seed=NULL, nDraws=10000)
 {
-  if(base::missing(pg_actual)) stop("Missing pg_actual value.")
-  if(!base::is.numeric(pg_actual) || (pg_actual < 0) || (pg_actual > 1)) stop("pg_actual must be number between 0 and 1.")
-  if(base::missing(pg_hypo)) stop("Missing pg_hypo value.")
-  if(!base::is.numeric(pg_hypo) || (pg_hypo < 0) || (pg_hypo > 1)) stop("pg_hypo must be number between 0 and 1.")
-  if(base::missing(n_actual)) stop("Missing n_actual value.")
-  if(!base::is.numeric(n_actual) || (n_actual <= 0)) stop("n_actual must be positive number.")
-  if(base::missing(n_hypo)) stop("Missing n_hypo value.")
-  if(!base::is.numeric(n_hypo) || (n_hypo <= 0)) stop("n_hypo must be positive number.")
+  assert_required(pg_actual, n_actual, pg_hypo, n_hypo)
+  assert_between_0_1(pg_actual, pg_hypo, accuracy)
+  assert_positive_numeric(n_actual, n_hypo)
+  assert_positive_integer(jury_n, nDraws)
+  assert_nonnegative_integer(pstrikes, dstrikes, digits)
+  if (!is.null(seed)) assert_nonnegative_integer(seed)
   # cat("This function is computationally intensive. Please be patient.\n")
 
   actual_jury_sim_stats <- sim.as.jury.stats(sample_pg=pg_actual, sample_n=n_actual,
@@ -41,17 +39,23 @@ sim.compare.jury.stats = function(pg_actual, n_actual, pg_hypo, n_hypo, jury_n=1
   hypo_jury_sim_stats   <- sim.as.jury.stats(sample_pg=pg_hypo, sample_n=n_hypo,
                                              jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy,
                                              digits=digits, nDraws=nDraws, seed=seed)
-  PG_diff = actual_jury_sim_stats$PG - hypo_jury_sim_stats$PG
+  PG_diff = get_pg_value(actual_jury_sim_stats, "actual_jury_sim_stats") -
+    get_pg_value(hypo_jury_sim_stats, "hypo_jury_sim_stats")
   SE_diff = base::sqrt(actual_jury_sim_stats$SE^2 + hypo_jury_sim_stats$SE^2)
   CI_diff = CI90(m=PG_diff, se=SE_diff)
   MOE <- base::as.numeric((CI_diff[2] - CI_diff[1]) / 2)
   base::names(CI_diff) <- base::c("Lower 5%", "Upper 95%")
 
-  difference_table <- round(data.frame(PG_diff, SE_diff, MOE, CI_diff[1], CI_diff[2], row.names = ""), digits)
-  colnames(difference_table) <- base::c("PG", "SE", "MOE", "Lower 5%", "Upper 95%")
+  difference_table <- data.frame(PG_diff, SE_diff, MOE, CI_diff[1], CI_diff[2], row.names = "")
+  colnames(difference_table) <- base::c("Difference in P(G)", "SE", "MOE", "Lower 5%", "Upper 95%")
 
-  return(base::list(actual_jury=actual_jury_sim_stats,
-                    hypo_jury=hypo_jury_sim_stats,
-                    difference=difference_table))
+  # names added for display purposes
+  names(actual_jury_sim_stats) <- c("P(G|actual)", "SE", "MOE", "Lower 5%", "Upper 95%")
+  names(hypo_jury_sim_stats) <- c("P(G|hypo)", "SE", "MOE", "Lower 5%", "Upper 95%")
+
+  return(base::list(actual_jury=round(actual_jury_sim_stats, digits),
+                    hypo_jury=round(hypo_jury_sim_stats, digits),
+                    difference=round(difference_table, digits)))
 
 }
+

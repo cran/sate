@@ -14,7 +14,7 @@ sim.compare.jury.stats(
   pstrikes = 0,
   dstrikes = 0,
   accuracy = 0.15,
-  seed = 12345,
+  seed = NULL,
   nDraws = 10000
 )
 }
@@ -37,7 +37,7 @@ sim.compare.jury.stats(
 
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
 
-\item{seed}{Set seed for random number generation for replication, default is 12345.}
+\item{seed}{Optional non-negative integer seed for replication. Default is NULL (no seeding).}
 
 \item{nDraws}{The number of simulations used to generate results. Should be very large number (default = 10000).}
 }

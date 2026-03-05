@@ -1,6 +1,20 @@
 
+sate v3.2.0 (Release date: 2026-03-05)
+==============
 
-sate v3.1.0 (Release date: TBD, est. 2025-11-05)
+Minor Changes:
+
+* Improved reliability of compare.jury.stats by preventing unintended rounding 
+  effects in calculations.
+* Added optional simulation mode (simulate) to key stats and graph functions, 
+  with sensible defaults and user override support.
+* Strengthened input checks and error messages (missing arguments, invalid 
+  ranges/types, and required dataset fields).
+* Improved output clarity (including P(G) labeling) while keeping backward compatibility.
+* Expanded test coverage for core probability/statistical behavior and edge cases.
+* Updated function documentation for clearer usage and argument expectations.
+
+sate v3.1.0 (Release date: 2025-11-06)
 ==============
 
 Major Changes:

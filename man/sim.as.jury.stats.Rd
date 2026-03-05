@@ -13,7 +13,7 @@ sim.as.jury.stats(
   accuracy = 0.15,
   digits = 3,
   nDraws = 10000,
-  seed = 12345
+  seed = NULL
 )
 }
 \arguments{
@@ -33,10 +33,10 @@ sim.as.jury.stats(
 
 \item{nDraws}{The number of simulations used to generate results. Should be very large number (default = 10000).}
 
-\item{seed}{Set seed for random number generation for replication, default is 12345.}
+\item{seed}{Optional non-negative integer seed for replication. Default is NULL (no seeding).}
 }
 \value{
-Returns a list of jury-level statistics to assess effect of a trial error.
+Returns a one-row data.frame with columns: P(G), SE, MOE, Lower 5%, and Upper 95%.
 }
 \description{
 Returns estimate of the probability of guilty verdict based on juror-level

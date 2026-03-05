@@ -12,7 +12,8 @@ graph.effect.defendant(
   jury_n = 12,
   pstrikes = 0,
   dstrikes = 0,
-  accuracy = 0.15
+  accuracy = 0.15,
+  simulate = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ graph.effect.defendant(
 \item{dstrikes}{Number of peremptory strikes by defendant; default value is 0.}
 
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
+
+\item{simulate}{Simulation control passed to `compare.jury.stats` and `as.jury.stats`.
+Use `FALSE` (default), `TRUE`, or a named list like `list(nDraws=5000, seed=12345)`.
+For graphing speed, `TRUE` uses `nDraws=2000` by default.}
 }
 \value{
 No return (creates plots)
@@ -45,4 +50,6 @@ Plots jury-level differences based on juror-level statistics supplied by user. P
 
    graph.effect.defendant(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
                          jury_n=6, pstrikes=3, dstrikes=3)
+
+   graph.effect.defendant(pg_actual=.70, n_actual=400, pg_hypo=.60, n_hypo=450, simulate=TRUE)
 }

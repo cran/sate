@@ -1,9 +1,9 @@
 #' Creates the shell of a plot showing relationship between jury pool preferences and jury verdict probabilities
 #'
-#' @param main Main title for plot (optional), default is "Jurors' Verdict Preferences, P(g)".
-#' @param xlab X-axis label for plot (optional), default is "Jury Verdict Probabilities, P(G)".
-#' @param ylab Main title for plot (optional), default is no main title.
-#' @return No return
+#' @param main Main title for plot (optional), default is no main title.
+#' @param xlab X-axis label for plot (optional), default is "Jurors' Verdict Preferences, P(g)".
+#' @param ylab Y-axis label for plot (optional), default is "Jury Verdict Probabilities, P(G)".
+#' @return No return value; function creates a plot.
 #' @description Creates the shell of a plot showing relationship between jury pool preferences and jury verdict probabilities,
 #'              optional argument to modify main, xlab, and ylab labels, includes grid lines.
 #' @examples

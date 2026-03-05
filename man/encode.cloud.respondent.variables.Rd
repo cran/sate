@@ -7,7 +7,9 @@
 encode.cloud.respondent.variables(dataset)
 }
 \arguments{
-\item{dataset}{Dataset containing Cloud Research respondent demographic information}
+\item{dataset}{Data frame containing Cloud Research respondent demographic information.
+Required columns are: Race, Education, Household.Income, Age, Gender, and Ethnicity.
+Age must be numeric.}
 }
 \value{
 Returns dataset with encoded variables added: black, ba_or_more, hhincome_over50k, age35plus, woman, hispanic, and respondent_na.

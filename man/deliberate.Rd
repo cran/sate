@@ -12,12 +12,14 @@ deliberate(g_votes, jury_n)
 \item{jury_n}{Size of the jury (i.e. 4, 6, 8, 12, or 16).}
 }
 \value{
-Returns "G" (guilty verdict) or "NG" (not guilty verdict).
+Returns "G" (guilty verdict), "NG" (not guilty verdict), or `NA` if either
+  input is `NA`.
 }
 \description{
 The deliberate function returns a jury verdict based on a simulation of deliberation
         as a modified tug-of-war between two verdict factions. Can be called directly, but is
         meant to be called many times to generate verdict probabilities based on g_votes and jury_n values.
+        Requires `0 <= g_votes <= jury_n`.
 }
 \examples{
    library(sate)

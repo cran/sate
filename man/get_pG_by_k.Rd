@@ -13,7 +13,7 @@ get_pG_by_k(jury_n = 6)
 Returns a vector of probabilities for guilty verdict of size jury_n + 1.
 }
 \description{
-Calculates a vector probabilities that a jury with jury_n will return a guilty verdict.
+Calculates a vector of probabilities that a jury with jury_n will return a guilty verdict.
              The vector represents P(G|k) for 0, 1, 2, ... , jury_n where k is the number of jurors
              initially in favor of guilty verdict.
 }

@@ -1,10 +1,179 @@
 
+## Internal input validation helpers -----------------------------------------
+#' Assert numeric values are between 0 and 1 (inclusive)
+#'
+#' @param ... Values to validate.
+#' @keywords internal
+#' @noRd
+assert_between_0_1 <- function(...) {
+  exprs <- as.list(substitute(list(...)))[-1L]
+  vals <- list(...)
+  labels <- vapply(exprs, deparse1, character(1))
+
+  if (length(vals) == 0L) {
+    stop("No arguments supplied to assert_between_0_1().", call. = FALSE)
+  }
+
+  for (i in seq_along(vals)) {
+    x <- vals[[i]]
+    nm <- labels[[i]]
+
+    if (!is.numeric(x) || any(is.na(x)) || any(!is.finite(x))) {
+      stop(nm, " must be numeric with finite, non-missing value(s).", call. = FALSE)
+    }
+    if (any(x < 0) || any(x > 1)) {
+      stop(nm, " must be between 0 and 1 (inclusive).", call. = FALSE)
+    }
+  }
+
+  invisible(TRUE)
+}
+
+#' Assert numeric values are strictly positive
+#'
+#' @param ... Values to validate.
+#' @keywords internal
+#' @noRd
+assert_positive_numeric <- function(...) {
+  exprs <- as.list(substitute(list(...)))[-1L]
+  vals <- list(...)
+  labels <- vapply(exprs, deparse1, character(1))
+
+  if (length(vals) == 0L) {
+    stop("No arguments supplied to assert_positive_numeric().", call. = FALSE)
+  }
+
+  for (i in seq_along(vals)) {
+    x <- vals[[i]]
+    nm <- labels[[i]]
+
+    if (!is.numeric(x) || any(is.na(x)) || any(!is.finite(x)) || any(x <= 0)) {
+      stop(nm, " must be numeric with finite, non-missing value(s) > 0.", call. = FALSE)
+    }
+  }
+
+  invisible(TRUE)
+}
+
+#' Assert scalar positive integers
+#'
+#' @param ... Values to validate.
+#' @keywords internal
+#' @noRd
+assert_positive_integer <- function(...) {
+  exprs <- as.list(substitute(list(...)))[-1L]
+  vals <- list(...)
+  labels <- vapply(exprs, deparse1, character(1))
+
+  if (length(vals) == 0L) {
+    stop("No arguments supplied to assert_positive_integer().", call. = FALSE)
+  }
+
+  for (i in seq_along(vals)) {
+    x <- vals[[i]]
+    nm <- labels[[i]]
+
+    if (!is.numeric(x) || length(x) != 1L || is.na(x) || !is.finite(x) || x <= 0 || x %% 1 != 0) {
+      stop(nm, " must be a single positive integer.", call. = FALSE)
+    }
+  }
+
+  invisible(TRUE)
+}
+
+#' Assert scalar non-negative integers
+#'
+#' @param ... Values to validate.
+#' @keywords internal
+#' @noRd
+assert_nonnegative_integer <- function(...) {
+  exprs <- as.list(substitute(list(...)))[-1L]
+  vals <- list(...)
+  labels <- vapply(exprs, deparse1, character(1))
+
+  if (length(vals) == 0L) {
+    stop("No arguments supplied to assert_nonnegative_integer().", call. = FALSE)
+  }
+
+  for (i in seq_along(vals)) {
+    x <- vals[[i]]
+    nm <- labels[[i]]
+
+    if (!is.numeric(x) || length(x) != 1L || is.na(x) || !is.finite(x) || x < 0 || x %% 1 != 0) {
+      stop(nm, " must be a single non-negative integer.", call. = FALSE)
+    }
+  }
+
+  invisible(TRUE)
+}
 
 
+#' Assert required arguments are supplied
+#'
+#' @param ... Arguments to check.
+#' @keywords internal
+#' @noRd
+assert_required <- function(...) {
+  miss <- missing_args(...)
+  if (length(miss)) {
+    stop(
+      "Missing required argument(s): ",
+      paste(miss, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  invisible(TRUE)
+}
+
+
+
+#' Evaluate code with an optional local random seed
+#'
+#' @param seed Optional non-negative integer seed. If NULL, current RNG state is used.
+#' @param fn Function with no arguments to evaluate under local seed control.
+#' @keywords internal
+#' @noRd
+with_local_seed <- function(seed, fn) {
+  if (!is.function(fn)) {
+    stop("fn must be a function.", call. = FALSE)
+  }
+  if (is.null(seed)) {
+    return(fn())
+  }
+
+  assert_nonnegative_integer(seed)
+
+  had_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+  if (had_seed) {
+    old_seed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+  }
+  on.exit({
+    if (had_seed) {
+      assign(".Random.seed", old_seed, envir = .GlobalEnv)
+    } else if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      rm(".Random.seed", envir = .GlobalEnv)
+    }
+  }, add = TRUE)
+
+  base::set.seed(seed)
+  fn()
+}
+
+#' Extract the jury guilty-probability value from stats output
+#'
+#' @param x One-row data.frame or named vector containing probability column.
+#' @param label Object label used in error messages.
+#' @keywords internal
+#' @noRd
+get_pg_value <- function(x, label = "x") {
+  if ("P(G)" %in% names(x)) return(x[["P(G)"]])
+  if ("PG" %in% names(x)) return(x[["PG"]])
+  stop(label, " must contain a probability column named 'P(G)' or 'PG'.", call. = FALSE)
+}
 #' Helper function to calculate the 90 percent confidence interval of a proportion.
 #'
-#' @param p The sample proportion (e.g. proportion of of jurors who favor a guilty verdict).
-#' @param se The standard error of the sample proportion, p.
+#' @param m The sample proportion (e.g. proportion of jurors who favor a guilty verdict).
+#' @param se The standard error of the sample proportion, m.
 #' @return Returns the 90 percent confidence interval as a list.
 #' @description Calculates the 90 percent confidence interval of a proportion. 90 percent confidence interval used to test one-sided hypothesis at .05 level.
 #' @examples
@@ -17,9 +186,8 @@
 #' @noRd
 CI90 <- function(m, se)
 {
-  if(base::missing(m)) stop("Missing m value.")
+  assert_required(m, se)
   if(!base::is.numeric(m)) stop("m must be a number.")
-  if(base::missing(se)) stop("Missing se value.")
   if(!base::is.numeric(se) || (se < 0)) stop("se must be non-negative number.")
 
   lower = m - stats::qnorm(0.95) * se
@@ -79,7 +247,7 @@ compact_harm_plot <- function()
 #' @noRd
 get.model.values <- function(jury_n)
 {
-  if(base::missing(jury_n)) stop("Missing jury_n value.")
+  assert_required(jury_n)
   if(!base::is.numeric(jury_n) || (jury_n %% 1 != 0) || (jury_n <= 0)) stop("jury_n must be positive integer.")
   # jury_n = 12
   P_matrix <- transition.matrix(jury_n = jury_n)
@@ -93,6 +261,18 @@ get.model.values <- function(jury_n)
 }
 
 
+missing_args <- function(...) {
+  exprs <- as.list(substitute(list(...)))[-1L]
+  labels <- vapply(exprs, deparse1, character(1))
+  target_env <- parent.frame(2L)
+
+  is_missing <- vapply(exprs, FUN = function(sym) {
+    if (!is.symbol(sym)) return(FALSE)
+    eval(bquote(missing(.(sym))), envir = target_env)
+  }, logical(1))
+
+  labels[is_missing]
+}
 
 #' Helper function use to plot point estimates with confidence intervals
 #'
@@ -103,6 +283,8 @@ get.model.values <- function(jury_n)
 #' @param pstrikes Number of peremptory strikes by prosecution; default value is 0.
 #' @param dstrikes Number of peremptory strikes by defendant; default value is 0.
 #' @param accuracy Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.
+#' @param simulate Simulation control passed to `as.jury.stats`. Use `FALSE`
+#'   (default), `TRUE`, or a named list like `list(nDraws=5000, seed=12345)`.
 #' @return No return (adds element to plot)
 #' @description Plots probability of guilty verdict with confidence interval based on juror-level
 #'              statistics. This is a helper function, called by graphing functions to add layer to open graph.
@@ -116,30 +298,34 @@ get.model.values <- function(jury_n)
 #' @importFrom ellipse ellipse
 #' @importFrom graphics lines points polygon
 #' @noRd
-plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstrikes=0, accuracy=.15)
+plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstrikes=0, accuracy=.15, simulate=FALSE)
 {
-  if(base::missing(pg)) stop("Missing pg value.")
-  if(!base::is.numeric(pg) || (pg < 0) || (pg > 1)) stop("pg must be number between 0 and 1.")
-  if(base::missing(n)) stop("Missing n value.")
-  if(!base::is.numeric(n) || (n <= 0)) stop("n must be positive number.")
+  assert_required(pg, n)
+  assert_between_0_1(pg)
+  assert_positive_numeric(n)
 
   # general form
   ci_color <- "#BCBCBC70"
   jurors.se  <- se.prop(p=pg, n=n)
-  jury.stats <- as.jury.stats(sample_pg=pg, sample_n=n, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)
+  jury.stats <- as.jury.stats(sample_pg=pg, sample_n=n, jury_n=jury_n, pstrikes=pstrikes,
+                              dstrikes=dstrikes, accuracy=accuracy, digits=99, simulate=simulate)
   # the +/- .01 here is used for slope of line at point
-  A <- (as.jury.point(sample_pg=pg +.01, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy) - as.jury.point(sample_pg=pg -.01, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes, accuracy=accuracy)) / .02
+  A <- (as.jury.point(sample_pg=pg +.01, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes,
+                      accuracy=accuracy, simulate=simulate) -
+          as.jury.point(sample_pg=pg -.01, jury_n=jury_n, pstrikes=pstrikes, dstrikes=dstrikes,
+                        accuracy=accuracy, simulate=simulate)) / .02
   H <- base::sqrt(1 + A^2)
   rotation_matrix <- base::matrix(nrow=2, byrow=T, data=base::c(A/H, -1/H, 1/H, A/H))
   ellipse <- ellipse::ellipse(x=0, centre=c(0, 0),
                               scale=c(jurors.se, jury.stats$SE),
                               level=.90) %*% rotation_matrix
+  pG_value <- get_pg_value(jury.stats, "jury.stats")
   ellipse[,1] <- ellipse[,1] + pg
-  ellipse[,2] <- ellipse[,2] + jury.stats$PG
+  ellipse[,2] <- ellipse[,2] + pG_value
   graphics::polygon(ellipse[,1], ellipse[,2], col=ci_color, border=F)
   graphics::lines(ellipse, col="gray25", lty=3)
-  graphics::points(x=pg, y=jury.stats$PG, col=point.col, pch=16)
-  graphics::points(x=pg, y=jury.stats$PG, col="black", pch=1)
+  graphics::points(x=pg, y=pG_value, col=point.col, pch=16)
+  graphics::points(x=pg, y=pG_value, col="black", pch=1)
 }
 
 
@@ -159,7 +345,7 @@ plot.ellipse <- function(pg, n, jury_n=12, point.col="gray25", pstrikes=0, dstri
 #' @noRd
 rounds_to_verdict <- function(jury_n)
 {
-  if(base::missing(jury_n)) stop("Missing jury_n value.")
+  assert_required(jury_n)
   if(!base::is.numeric(jury_n) || (jury_n %% 1 != 0) || (jury_n <= 0)) stop("jury_n must be positive integer.")
 
   # rounds to verdict
@@ -192,13 +378,13 @@ rounds_to_verdict <- function(jury_n)
 #' @noRd
 se.prop <- function(p, n)
 {
-  if(base::missing(p)) stop("Missing p value.")
-  if(!base::is.numeric(p) || (p < 0) || (p > 1)) stop("p must be number between 0 and 1.")
-  if(base::missing(n)) stop("Missing n value.")
-  if(!base::is.numeric(n) || (n <= 0)) stop("Initial n must be positive number.")
+  assert_required(p, n)
+  assert_between_0_1(p)
+  assert_positive_numeric(n)
 
   se = base::sqrt(p*(1-p)/n)
   # print(se)
   return(se)
 }
+
 

@@ -14,6 +14,8 @@
 #' @export
 transition.matrix <- function(jury_n)
 {
+  assert_required(jury_n)
+  assert_positive_integer(jury_n)
   n_g <- 1:(jury_n-1)
   margin_vote_prob_g <- .5*((n_g-1) / jury_n) + .25
   prob_add_g <- margin_vote_prob_g^2

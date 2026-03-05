@@ -14,7 +14,8 @@ compare.jury.stats(
   pstrikes = 0,
   dstrikes = 0,
   accuracy = 0.15,
-  digits = 3
+  digits = 3,
+  simulate = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ hypothetical trial condition (the fair trial without error).}
 default value is .15.}
 
 \item{digits}{Number of digits to report after decimal places; default value is 3.}
+
+\item{simulate}{Simulation control for uncertainty estimation. Use `FALSE` (default)
+for analytic method, `TRUE` for simulation with defaults (`nDraws=10000`,
+`seed=NULL`), or a named list like `list(nDraws=5000, seed=12345)`.}
 }
 \value{
 Returns a list of jury-level statistics to assess effect of a trial error.
@@ -54,4 +59,7 @@ Calculates jury-level statistics and differences based on juror-level
 
    compare.jury.stats(pg_actual=.75, n_actual=450, pg_hypo=.65, n_hypo=350,
                       jury_n=6, pstrikes=3, dstrikes=3)
+
+   compare.jury.stats(pg_actual=.70, n_actual=400, pg_hypo=.60, n_hypo=450,
+                      simulate=TRUE)
 }

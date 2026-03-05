@@ -11,7 +11,8 @@ as.jury.stats(
   pstrikes = 0,
   dstrikes = 0,
   accuracy = 0.15,
-  digits = 3
+  digits = 3,
+  simulate = FALSE
 )
 }
 \arguments{
@@ -28,9 +29,13 @@ as.jury.stats(
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
 
 \item{digits}{Number of digits to report after decimal places; default value is 3.}
+
+\item{simulate}{Simulation control for uncertainty estimation. Use `FALSE` (default)
+for analytic method, `TRUE` for simulation with defaults (`nDraws=10000`,
+`seed=NULL`), or a named list like `list(nDraws=5000, seed=12345)`.}
 }
 \value{
-Returns the probability jury finds defendant guilty.
+Returns a one-row data.frame with columns: P(G), SE, MOE, Lower 5%, and Upper 95%.
 }
 \description{
 Calculates probability jury finds defendant guilty based on verdicts preferences of jury pool.
@@ -41,4 +46,9 @@ Calculates probability jury finds defendant guilty based on verdicts preferences
    as.jury.stats(sample_pg=.50, sample_n=830)
 
    as.jury.stats(sample_pg=10/12, sample_n=295)
+
+   as.jury.stats(sample_pg=.50, sample_n=830, simulate=TRUE)
+
+   as.jury.stats(sample_pg=.50, sample_n=830,
+                 simulate=list(nDraws=5000, seed=12345))
 }

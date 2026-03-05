@@ -12,13 +12,15 @@ deliberate.civil(p_votes, jury_n)
 \item{jury_n}{Size of the jury (i.e. 4, 6, 8, 12, or 16).}
 }
 \value{
-Returns "P" (plaintiff verdict) or "D" (defendant verdict).
+Returns "P" (plaintiff verdict), "D" (defendant verdict), or `NA` if either
+  input is `NA`.
 }
 \description{
 The deliberate function returns a jury verdict based on a simulation of deliberation
         as a tug-of-war between two verdict factions. The civil version of deliberate does not have
         presumption in favor of either party. Can be called directly, but is meant to be called
         many times to generate verdict probabilities based on p_votes and jury_n values.
+        Requires `0 <= p_votes <= jury_n`.
 }
 \examples{
    library(sate)

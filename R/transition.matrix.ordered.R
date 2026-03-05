@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Constructs the full **column-stochastic** Markov transition matrix \(P\) for a jury
-#' deliberation model with an **ordered** set of verdict options (least → most punitive).
+#' deliberation model with an **ordered** set of verdict options (least to most punitive).
 #' Transient states are all compositions of `jury_n` jurors across the `verdict_options`;
 #' absorbing states are the `K` unanimity vertices (one per verdict), appended at the end
 #' in the same order as `verdict_options`.
@@ -14,14 +14,14 @@
 #' \deqn{p_\text{up} = \left(0.5\frac{g-1}{n} + 0.25\right)^2,\quad
 #'       p_\text{down} = \left(1 - 0.5\frac{g-1}{n} - 0.25\right)^2,\quad
 #'       p_\text{stay} = 1 - p_\text{up} - p_\text{down}.}
-#' Map “up” to moving one juror across the cut toward the more punitive option, “down”
-#' toward the less punitive option; pool all “stay” mass (and any illegal move mass at
+#' Map "up" to moving one juror across the cut toward the more punitive option, "down"
+#' toward the less punitive option; pool all "stay" mass (and any illegal move mass at
 #' boundaries) into the **self-loop** so each column still sums to 1.
 #'
 #' @param jury_n Integer. Size of the jury (number of jurors), `jury_n >= 1`.
 #' @param verdict_options Character vector of **ordered** verdict labels from least to most
-#'   punitive, e.g. `c("NG","M2","M1")` or `c("NG","M3","M2","M1")`. The order defines
-#'   which options are adjacent.
+#'   punitive, e.g. `c("NG","M2","M1")` or `c("NG","M3","M2","M1")`. Labels must be
+#'   non-missing, non-empty, and unique. The order defines which options are adjacent.
 #' @param digits Optional integer. If supplied, round the returned matrix to this many
 #'   decimals and then re-normalize each column to remain column-stochastic. Defaults to
 #'   `NULL` (no rounding).
@@ -32,15 +32,15 @@
 #'   absorbing states in the order of `verdict_options`. The matrix carries metadata on
 #'   `attr(P, "meta")` as a list with elements:
 #'   \itemize{
-#'     \item `states` — list of length-`K` integer count vectors for each state, in column order;
-#'     \item `idx` — environment mapping comma-joined count vectors to column/row indices;
-#'     \item `T`, `S`, `K`, `n` — counts (transients, total states, #options, #jurors);
-#'     \item `verdict_options` — the label vector you supplied.
+#'     \item `states` - list of length-`K` integer count vectors for each state, in column order;
+#'     \item `idx` - environment mapping comma-joined count vectors to column/row indices;
+#'     \item `T`, `S`, `K`, `n` - counts (transients, total states, #options, #jurors);
+#'     \item `verdict_options` - the label vector you supplied.
 #'   }
 #'
 #' @details
 #' * Absorbing columns (the last `K`) are identity columns (unanimity stays put).
-#' * Self-loops collect “stay” mass from all cuts and any mass from moves that are illegal
+#' * Self-loops collect "stay" mass from all cuts and any mass from moves that are illegal
 #'   at boundaries (e.g., trying to move from an empty option).
 #' * Providing `digits` is meant for tidy printing; for numerical work you may prefer to
 #'   leave `digits = NULL` to keep full precision.
@@ -62,10 +62,29 @@
 #' @importFrom stats setNames
 #' @export
 transition.matrix.ordered <- function(jury_n, verdict_options, digits = NULL) {
+  assert_required(jury_n, verdict_options)
+  assert_positive_integer(jury_n)
+  if (!is.null(digits)) assert_nonnegative_integer(digits)
+  if (!is.character(verdict_options)) {
+    stop("verdict_options must be a character vector.", call. = FALSE)
+  }
+  if (length(verdict_options) < 2L) {
+    stop("verdict_options must have at least two entries.", call. = FALSE)
+  }
+  if (any(is.na(verdict_options))) {
+    stop("verdict_options cannot contain missing values.", call. = FALSE)
+  }
+  if (any(trimws(verdict_options) == "")) {
+    stop("verdict_options cannot contain empty strings.", call. = FALSE)
+  }
+  if (anyDuplicated(verdict_options) > 0L) {
+    stop("verdict_options must contain unique labels.", call. = FALSE)
+  }
+
   n <- as.integer(jury_n)
-  labs <- as.character(verdict_options)
+  labs <- verdict_options
   K <- length(labs)
-  stopifnot(n >= 1, K >= 2)
+  if (n < 1L) stop("jury_n must be >= 1.", call. = FALSE)
 
   absorb_threshold = n  # hard coded * (8/12) to replicate a Hastie analysis
 
@@ -74,7 +93,9 @@ transition.matrix.ordered <- function(jury_n, verdict_options, digits = NULL) {
     thr <- n
   } else {
     thr <- as.integer(absorb_threshold)
-    stopifnot(thr >= 1L, thr <= n)
+    if (thr < 1L || thr > n) {
+      stop("absorb_threshold must be between 1 and jury_n.", call. = FALSE)
+    }
   }
 
   # ---- enumerate all K-part compositions of n; transients first, then unanimities (labs order)

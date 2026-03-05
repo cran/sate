@@ -9,7 +9,8 @@ as.jury.point(
   jury_n = 12,
   pstrikes = 0,
   dstrikes = 0,
-  accuracy = 0.15
+  accuracy = 0.15,
+  simulate = FALSE
 )
 }
 \arguments{
@@ -22,12 +23,17 @@ as.jury.point(
 \item{dstrikes}{Number of peremptory strikes by defendant; default value is 0.}
 
 \item{accuracy}{Accuracy of parties' peremptory strikes; a number between 0 and 1; default value is .15.}
+
+\item{simulate}{Simulation control. Use `FALSE` (default) for deterministic
+Markov model values, `TRUE` for simulation with defaults (`nDraws=10000`,
+`seed=NULL`), or a named list like `list(nDraws=5000, seed=12345)`.}
 }
 \value{
 Returns the probability jury finds defendant guilty (if sample_pg is a single number) or vector of such probabilities (if sample_pg is a vector).
 }
 \description{
-Calculates the probability that jury of size jury_n finds defendant guilty given on preferences of jury pool (inputted as sample_pg).
+Calculates the probability that a jury of size jury_n finds defendant guilty
+             given preferences of the jury pool (input as sample_pg).
              Does not estimate uncertainty (use as.jury.stats function for inferential statistics).
 }
 \examples{
@@ -35,4 +41,6 @@ Calculates the probability that jury of size jury_n finds defendant guilty given
    as.jury.point(sample_pg = .50)
 
    as.jury.point(sample_pg = 10/12)
+
+   as.jury.point(sample_pg = .50, simulate = TRUE)
 }

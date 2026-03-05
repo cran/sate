@@ -10,11 +10,13 @@ prob_ord_from_pool(jury_n, verdict_options, verdict_props, digits = NULL)
 \item{jury_n}{Integer. Number of jurors.}
 
 \item{verdict_options}{Character vector of ordered verdict labels
-(e.g., `c("NG","M2","M1")`). Order matters: left = most lenient.}
+(e.g., `c("NG","M2","M1")`). Order matters: left = most lenient.
+Labels must be non-missing, non-empty, and unique.}
 
 \item{verdict_props}{Numeric vector specifying proportion of jurors who support
 the respective verdict_options in the population from which jurors are drawn.
-(e.g., `c(.25,.50,.25)`). Must correspond to verdict_options.}
+(e.g., `c(.25,.50,.25)`). Must correspond to verdict_options, contain
+non-missing finite values, be non-negative, and sum to a positive value.}
 
 \item{digits}{Integer. Optional, number of digits to round in the returned matrix.}
 }

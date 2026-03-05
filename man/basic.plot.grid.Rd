@@ -7,14 +7,14 @@
 basic.plot.grid(main, xlab, ylab)
 }
 \arguments{
-\item{main}{Main title for plot (optional), default is "Jurors' Verdict Preferences, P(g)".}
+\item{main}{Main title for plot (optional), default is no main title.}
 
-\item{xlab}{X-axis label for plot (optional), default is "Jury Verdict Probabilities, P(G)".}
+\item{xlab}{X-axis label for plot (optional), default is "Jurors' Verdict Preferences, P(g)".}
 
-\item{ylab}{Main title for plot (optional), default is no main title.}
+\item{ylab}{Y-axis label for plot (optional), default is "Jury Verdict Probabilities, P(G)".}
 }
 \value{
-No return
+No return value; function creates a plot.
 }
 \description{
 Creates the shell of a plot showing relationship between jury pool preferences and jury verdict probabilities,

@@ -45,8 +45,14 @@ prob.ordered.verdicts <- function(jury_n,
                                   verdict_options,
                                   digits = NULL,
                                   collab = TRUE) {
+  assert_required(jury_n, verdict_options)
+  assert_positive_integer(jury_n)
+  if (!is.null(digits)) assert_nonnegative_integer(digits)
+  if (!is.logical(collab) || length(collab) != 1L || is.na(collab)) {
+    stop("collab must be TRUE or FALSE.", call. = FALSE)
+  }
 
-  P <- transition.matrix.ordered(jury_n, verdict_options)
+  P <- transition.matrix.ordered(jury_n, verdict_options, digits=99)
   meta <- attr(P, "meta")
   T <- meta$T; S <- meta$S; K <- meta$K
   states_mat <- meta$states_mat

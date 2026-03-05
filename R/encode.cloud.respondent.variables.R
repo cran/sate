@@ -1,6 +1,8 @@
 #' Encodes Cloud Research respondent information in form suitable for calculating sampling weights
 #'
-#' @param dataset Dataset containing Cloud Research respondent demographic information
+#' @param dataset Data frame containing Cloud Research respondent demographic information.
+#'   Required columns are: Race, Education, Household.Income, Age, Gender, and Ethnicity.
+#'   Age must be numeric.
 #' @return Returns dataset with encoded variables added: black, ba_or_more, hhincome_over50k, age35plus, woman, hispanic, and respondent_na.
 #' @description Encodes Cloud research respondent information with names and values suitable
 #'              for calculating sampling weights. All variables encoded and added to dataset are booleans. The variable respondent_na is TRUE
@@ -25,7 +27,35 @@
 #'
 encode.cloud.respondent.variables <- function(dataset)
 {
+  assert_required(dataset)
+  if (!is.data.frame(dataset)) {
+    stop("dataset must be a data.frame.", call. = FALSE)
+  }
+
+  required_cols <- c("Race", "Education", "Household.Income", "Age", "Gender", "Ethnicity")
+  missing_cols <- setdiff(required_cols, names(dataset))
+  if (length(missing_cols) > 0) {
+    stop(
+      "dataset is missing required column(s): ",
+      paste(missing_cols, collapse = ", "),
+      ".",
+      call. = FALSE
+    )
+  }
+
+  if (!is.numeric(dataset$Age)) {
+    stop("dataset$Age must be numeric.", call. = FALSE)
+  }
+  if (any(!is.na(dataset$Age) & !is.finite(dataset$Age))) {
+    stop("dataset$Age contains non-finite values.", call. = FALSE)
+  }
+
   respondentdata <- dataset
+  respondentdata$Race <- as.character(respondentdata$Race)
+  respondentdata$Education <- as.character(respondentdata$Education)
+  respondentdata$Household.Income <- as.character(respondentdata$Household.Income)
+  respondentdata$Gender <- as.character(respondentdata$Gender)
+  respondentdata$Ethnicity <- as.character(respondentdata$Ethnicity)
   # weights based on list(pop.black, pop.ba_or_more, pop.hhincome_over50k, pop.age35plus, pop.woman, pop.hispanic))
 
   # Race

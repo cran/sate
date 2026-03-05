@@ -20,30 +20,36 @@
 #' @export
 compare.juror.stats <- function(pg_actual, n_actual, pg_hypo, n_hypo, digits=3)
 {
+  assert_required(pg_actual, n_actual, pg_hypo, n_hypo)
+  assert_between_0_1(pg_actual, pg_hypo)
+  assert_positive_numeric(n_actual, n_hypo)
+  assert_nonnegative_integer(digits)
 
   se_pg_actual <- se.prop(pg_actual, n_actual)
   CI90 <- CI90(pg_actual, se_pg_actual)
-  actual_jurors <- base::round(base::c(pg = pg_actual, SE = se_pg_actual,
+  actual_jurors <- base::c(pg = pg_actual, SE = se_pg_actual,
                            MOE = se_pg_actual*qnorm(.95),
                            Lower_5 = CI90[1],
-                           Upper_95 = CI90[2]), digits)
+                           Upper_95 = CI90[2])
   names(actual_jurors) <- c("P(g|actual)", "SE", "MOE", "Lower 5%", "Upper 95%")
 
   se_pg_hypo <- se.prop(pg_hypo, n_hypo)
   CI90 <- CI90(pg_hypo, se_pg_hypo)
-  hypo_jurors <- base::round(base::c(pg = pg_hypo, SE = se_pg_hypo,
+  hypo_jurors <- base::c(pg = pg_hypo, SE = se_pg_hypo,
                          MOE = se_pg_hypo*qnorm(.95),
                          Lower_5 = CI90[1],
-                         Upper_95 = CI90[2]), digits)
+                         Upper_95 = CI90[2])
   names(hypo_jurors) <- c("P(g|hypo)", "SE", "MOE", "Lower 5%", "Upper 95%")
 
   se_pg_diff <- sqrt(se_pg_actual^2 + se_pg_hypo^2)
   CI90 <- CI90(pg_actual - pg_hypo, se_pg_diff)
-  difference_jurors <- base::round(base::c(diff = pg_actual - pg_hypo, SE = se_pg_diff,
+  difference_jurors <- base::c(diff = pg_actual - pg_hypo, SE = se_pg_diff,
                                MOE = se_pg_diff*qnorm(.95),
                                Lower_5 = CI90[1],
-                               Upper_95 = CI90[2]), digits)
+                               Upper_95 = CI90[2])
   names(difference_jurors) <- c("Difference", "SE", "MOE", "Lower 5%", "Upper 95%")
   # PG    SE   MOE Lower 5% Upper 95%
-  return(list(actual_trial=actual_jurors, hypo_trial=hypo_jurors, difference=difference_jurors))
+  return(list(actual_trial=round(actual_jurors, digits),
+              hypo_trial=round(hypo_jurors, digits),
+              difference=round(difference_jurors, digits)))
 }
